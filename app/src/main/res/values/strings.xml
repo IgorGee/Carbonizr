@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Pendant Creator 3D</string>
+    <string name="title">Pendant Creator</string>
+    <string name="hint_username">Email or Username</string>
+    <string name="hint_password">Password</string>
+    <string name="google_sign_in">Sign In With Google</string>
+    <string name="facebook_sign_in">Sign In With Facebook</string>
 </resources>
