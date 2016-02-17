@@ -8,4 +8,7 @@
     <dimen name="third_party_sign_in_margin_top_input">72dp</dimen>
     <dimen name="button_margin_top">16dp</dimen>
     <dimen name="width_log_in_edit_text">240dp</dimen>
+
+    <dimen name="nav_header_height">192dp</dimen>
+    <dimen name="nav_header_text_margin_left">16dp</dimen>
 </resources>

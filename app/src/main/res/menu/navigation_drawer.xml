@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/spades"
+            android:title="@string/spades_string"/>
+
+        <item
+            android:id="@+id/hearts"
+            android:title="@string/hearts_string"/>
+
+        <item
+            android:id="@+id/clovers"
+            android:title="@string/clovers_string"/>
+
+        <item
+            android:id="@+id/diamonds"
+            android:title="@string/diamonds_string"/>
+
+        <item
+            android:id="@+id/custom"
+            android:title="@string/custom_string"/>
+
+    </group>
+
+</menu>

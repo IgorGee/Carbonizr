@@ -1,0 +1,21 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/navbar_image_content_description"
+        android:scaleType="centerCrop"
+        android:src="@drawable/navigation_header_background_image"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/nav_header_text_margin_left"
+        android:text="@string/username_placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+</FrameLayout>

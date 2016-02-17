@@ -5,4 +5,15 @@
     <string name="hint_password">Password</string>
     <string name="google_sign_in">Sign In With Google</string>
     <string name="facebook_sign_in">Sign In With Facebook</string>
+    <string name="spades_string">Spades</string>
+    <string name="hearts_string">Hearts</string>
+    <string name="clovers_string">Clovers</string>
+    <string name="diamonds_string">Diamonds</string>
+    <string name="custom_string">Custom</string>
+    <string name="submit_button_text">Submit</string>
+
+    <string name="navbar_image_content_description">Navigation Bar background image</string>
+    <string name="drawer_open_desc">open</string>
+    <string name="drawer_close_desc">close</string>
+    <string name="username_placeholder">Username</string>
 </resources>
