@@ -33,11 +33,9 @@
             android:fillViewport="true">
 
             <FrameLayout
+                android:id="@+id/fragmentPlaceholder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <include layout="@layout/fragment_log_in"/>
-
             </FrameLayout>
 
         </android.support.v4.widget.NestedScrollView>
