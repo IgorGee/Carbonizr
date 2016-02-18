@@ -14,4 +14,6 @@ public class LogInFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_log_in, container, false);
     }
+
+    //TODO Add email/username and password sign in functionality
 }
