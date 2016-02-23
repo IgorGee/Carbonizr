@@ -36,3 +36,6 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+# Private information
+app/src/main/java/xyz/igorgee/shapwaysapi/Consumer.java

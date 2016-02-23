@@ -26,6 +26,7 @@ dependencies {
 
     compile 'com.android.support:design:23.1.1'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.scribejava:scribejava-apis:2.2.2'
 
     testCompile 'junit:junit:4.12'
 
