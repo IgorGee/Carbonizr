@@ -71,50 +71,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.spades:
-                Snackbar.make(rootLayout, R.string.spades_string, Snackbar.LENGTH_SHORT)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
+                makeSnackBar(R.string.spades_string, null);
                 break;
             case R.id.hearts:
-                Snackbar.make(rootLayout, R.string.hearts_string, Snackbar.LENGTH_SHORT)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
+                makeSnackBar(R.string.hearts_string, null);
                 break;
             case R.id.clovers:
-                Snackbar.make(rootLayout, R.string.clovers_string, Snackbar.LENGTH_SHORT)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
+                makeSnackBar(R.string.clovers_string, null);
                 break;
             case R.id.diamonds:
-                Snackbar.make(rootLayout, R.string.diamonds_string, Snackbar.LENGTH_SHORT)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
+                makeSnackBar(R.string.diamonds_string, null);
                 break;
-
             case R.id.custom:
-                Snackbar.make(rootLayout, R.string.custom_string, Snackbar.LENGTH_SHORT)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
+                makeSnackBar(R.string.custom_string, null);
                 break;
         }
 
@@ -126,5 +95,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPostCreate(savedInstanceState);
         // Changes home icon from "back" to "hamburger"
         drawerToggle.syncState();
+    }
+
+    public void makeSnackBar(int content, String confirm) {
+        Snackbar.make(rootLayout, content, Snackbar.LENGTH_SHORT)
+                .setAction(confirm == null ? "Ok" : confirm, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }).show();
     }
 }
