@@ -7,6 +7,8 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth10aService;
 
+import java.util.Scanner;
+
 
 public class Client {
 
@@ -32,6 +34,18 @@ public class Client {
         verifier = new Verifier(pin);
     }
 
+    public Token getRequestToken() {
+        return requestToken;
+    }
+
+    public void setRequestToken(Token requestToken) {
+        this.requestToken = requestToken;
+    }
+
+    public Token getAccessToken() {
+        return accessToken;
+    }
+
     public void setAccessToken() {
         accessToken = service.getAccessToken(requestToken, verifier);
     }
@@ -46,6 +60,13 @@ public class Client {
         request = new OAuthRequest(Verb.GET, Discovery.ORDER.toString(), service);
         service.signRequest(accessToken, request);
         return request.send().getBody();
+    }
+
+    public static void main(String[] args) {
+        Client client = new Client();
+        System.out.println(client.getAuthorizationUrl());
+        client.setVerifier(new Scanner(System.in).nextLine());
+        client.setAccessToken();
     }
 
 }

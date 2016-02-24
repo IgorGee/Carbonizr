@@ -8,7 +8,7 @@ public class ShapewaysApi extends DefaultApi10a {
     public static final String BASE_URL = "https://api.shapeways.com";
 
     private static final String AUTHORIZATION_URL =
-            "https://api.shapeways.com/authorize?oauth_token=%s";
+            "https://api.shapeways.com/login?oauth_token=%s";
 
     /**
      * Initialization on Demand Holder (Design Pattern)
