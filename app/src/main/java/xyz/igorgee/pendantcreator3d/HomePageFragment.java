@@ -2,6 +2,7 @@ package xyz.igorgee.pendantcreator3d;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,12 +27,12 @@ public class HomePageFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         client = new Client();
-        String accessTokenValue = getActivity().
-                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                getString(MainActivity.ACCESS_TOKEN_VALUE, null);
-        String accessTokenSecret = getActivity().
-                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                getString(MainActivity.ACCESS_TOKEN_SECRET, null);
+        SharedPreferences preferences = getActivity().
+                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE);
+        
+        String accessTokenValue = preferences.getString(MainActivity.ACCESS_TOKEN_VALUE, null);
+        String accessTokenSecret = preferences.getString(MainActivity.ACCESS_TOKEN_SECRET, null);
+
         client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
         new connectToClient().execute();
 
