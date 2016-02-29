@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,6 +16,9 @@ import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.igorgee.utilities.UIUtilities;
+
+import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -87,19 +89,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.spades:
-                makeSnackBar(R.string.spades_string, null);
+                makeSnackbar(rootLayout, R.string.spades_string);
                 break;
             case R.id.hearts:
-                makeSnackBar(R.string.hearts_string, null);
+                makeSnackbar(rootLayout, R.string.hearts_string);
                 break;
             case R.id.clovers:
-                makeSnackBar(R.string.clovers_string, null);
+                makeSnackbar(rootLayout, R.string.clovers_string);
                 break;
             case R.id.diamonds:
-                makeSnackBar(R.string.diamonds_string, null);
+                makeSnackbar(rootLayout, R.string.diamonds_string);
                 break;
             case R.id.custom:
-                makeSnackBar(R.string.custom_string, null);
+                makeSnackbar(rootLayout, R.string.custom_string);
                 break;
         }
 
@@ -111,15 +113,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPostCreate(savedInstanceState);
         // Changes home icon from "back" to "hamburger"
         drawerToggle.syncState();
-    }
-
-    public void makeSnackBar(int content, String confirm) {
-        Snackbar.make(rootLayout, content, Snackbar.LENGTH_SHORT)
-                .setAction(confirm == null ? "Ok" : confirm, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                }).show();
     }
 }

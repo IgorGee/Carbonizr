@@ -26,6 +26,8 @@ import butterknife.OnClick;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.shapwaysapi.Consumer;
 
+import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
+
 public class LogInFragment extends Fragment {
     public static final String EXTRA_URL = "xyz.igorgee.pendantcreator3d.URL";
 
@@ -51,25 +53,13 @@ public class LogInFragment extends Fragment {
         if (client != null) {
             String verification = pin.getText().toString();
             if (verification.equals("")) {
-                Snackbar.make(view, "Please enter your pin.", Snackbar.LENGTH_LONG)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        }).show();
+                makeSnackbar(view, "Please enter your pin.");
             } else {
                 client.setVerifier(verification);
                 new ObtainAccessToken(view).execute();
             }
         } else {
-            Snackbar.make(view, "Please click the \"Get Pin\" Button first.", Snackbar.LENGTH_LONG)
-                    .setAction("Ok", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    }).show();
+            makeSnackbar(view, "Please click the \"Get Pin\" Button first.");
         }
     }
 
@@ -139,13 +129,7 @@ public class LogInFragment extends Fragment {
                         .replace(R.id.fragmentPlaceholder, fragment)
                         .commit();
             } catch (OAuthException e) {
-                Snackbar.make(view, "Sorry, try again.", Snackbar.LENGTH_LONG)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        }).show();
+                makeSnackbar(view, "Sorry, try again.");
                 e.printStackTrace();
             }
 
