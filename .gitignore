@@ -34,6 +34,7 @@ proguard/
 /.idea/libraries
 /.idea/misc.xml
 /.idea/inspectionProfiles/
+/.idea/dictionaries/
 
 # Android Studio captures folder
 captures/
