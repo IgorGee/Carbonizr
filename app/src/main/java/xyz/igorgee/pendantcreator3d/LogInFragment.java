@@ -1,11 +1,16 @@
 package xyz.igorgee.pendantcreator3d;
 
+import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.shapwaysapi.Client;
+import xyz.igorgee.shapwaysapi.Consumer;
 
 public class LogInFragment extends Fragment {
     public static final String EXTRA_URL = "xyz.igorgee.pendantcreator3d.URL";
@@ -97,11 +103,34 @@ public class LogInFragment extends Fragment {
             try {
                 Log.d("CLIENT", "Gettin dat Access Token");
 
-                client.setAccessToken();
+                client.retrieveAccessToken();
                 Token accessToken = client.getAccessToken();
 
-                if (accessToken == null) {
+                if (accessToken.getToken() == null) {
                     throw new OAuthException("Didn't get Access Token.");
+                } else {
+                    SharedPreferences.Editor editor = getActivity().
+                            getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE)
+                            .edit();
+                    editor.putString("accessTokenValue", accessToken.getToken());
+                    editor.putString("accessTokenSecret", accessToken.getSecret());
+                    editor.apply();
+
+                    String aTV = getActivity().
+                            getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
+                            getString("accessTokenValue", null);
+                    String aTS = getActivity().
+                            getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
+                            getString("accessTokenValue", null);
+                    Token t = new Token(aTV, aTS);
+                    if (accessToken.equals(t)) {
+                        Log.d("TOKEN", "They are equal");
+                    } else {
+                        Log.d("TOKEN", "They ain't equal");
+                        System.out.println(accessToken);
+                        System.out.println(t);
+                    }
+                    Log.d("TEST", client.getCart());
                 }
 
                 HomePageFragment fragment = new HomePageFragment();
@@ -127,6 +156,8 @@ public class LogInFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((DrawerLayout) getActivity().findViewById(R.id.drawerLayout)).setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         ButterKnife.unbind(this);
     }
 

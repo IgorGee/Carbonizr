@@ -2,6 +2,7 @@ package xyz.igorgee.pendantcreator3d;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String MY_PREF_NAME = "MyPrefsFile";
+
     @Bind(R.id.drawerLayout) DrawerLayout drawerLayout;
     @Bind(R.id.rootLayout) CoordinatorLayout rootLayout;
     @Bind(R.id.toolBar) Toolbar toolbar;
@@ -29,14 +32,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragmentPlaceholder, new LogInFragment());
-        fragmentTransaction.commit();
-
         ButterKnife.bind(this);
         initializeInstances();
+
+        chooseAppropriateFragment();
+    }
+
+    private void chooseAppropriateFragment() {
+        SharedPreferences preferences = getSharedPreferences(MY_PREF_NAME, MODE_PRIVATE);
+        String accessTokenValue = preferences.getString("accessTokenValue", null);
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        if (accessTokenValue == null) {
+            fragmentTransaction.add(R.id.fragmentPlaceholder, new LogInFragment());
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        } else {
+            fragmentTransaction.add(R.id.fragmentPlaceholder, new HomePageFragment());
+        }
+
+        fragmentTransaction.commit();
     }
 
     private void initializeInstances() {
