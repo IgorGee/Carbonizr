@@ -102,22 +102,6 @@ public class LogInFragment extends Fragment {
                     editor.putString("accessTokenValue", accessToken.getToken());
                     editor.putString("accessTokenSecret", accessToken.getSecret());
                     editor.apply();
-
-                    String aTV = getActivity().
-                            getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                            getString("accessTokenValue", null);
-                    String aTS = getActivity().
-                            getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                            getString("accessTokenValue", null);
-                    Token t = new Token(aTV, aTS);
-                    if (accessToken.equals(t)) {
-                        Log.d("TOKEN", "They are equal");
-                    } else {
-                        Log.d("TOKEN", "They ain't equal");
-                        System.out.println(accessToken);
-                        System.out.println(t);
-                    }
-                    Log.d("TEST", client.getCart());
                 }
 
                 HomePageFragment fragment = new HomePageFragment();
