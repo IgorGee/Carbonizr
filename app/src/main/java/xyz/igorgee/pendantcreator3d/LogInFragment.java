@@ -99,8 +99,8 @@ public class LogInFragment extends Fragment {
                     SharedPreferences.Editor editor = getActivity().
                             getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE)
                             .edit();
-                    editor.putString("accessTokenValue", accessToken.getToken());
-                    editor.putString("accessTokenSecret", accessToken.getSecret());
+                    editor.putString(MainActivity.ACCESS_TOKEN_VALUE, accessToken.getToken());
+                    editor.putString(MainActivity.ACCESS_TOKEN_SECRET, accessToken.getSecret());
                     editor.apply();
                 }
 

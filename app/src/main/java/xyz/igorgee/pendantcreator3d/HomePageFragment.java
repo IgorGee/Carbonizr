@@ -28,10 +28,10 @@ public class HomePageFragment extends Fragment {
         client = new Client();
         String accessTokenValue = getActivity().
                 getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                getString("accessTokenValue", null);
+                getString(MainActivity.ACCESS_TOKEN_VALUE, null);
         String accessTokenSecret = getActivity().
                 getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE).
-                getString("accessTokenSecret", null);
+                getString(MainActivity.ACCESS_TOKEN_SECRET, null);
         client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
         new connectToClient().execute();
 

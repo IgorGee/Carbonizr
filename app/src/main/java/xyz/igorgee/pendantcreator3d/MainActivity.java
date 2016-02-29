@@ -20,6 +20,8 @@ import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String MY_PREF_NAME = "MyPrefsFile";
+    public static final String ACCESS_TOKEN_VALUE = "accessTokenValue";
+    public static final String ACCESS_TOKEN_SECRET = "accessTokenSecret";
 
     @Bind(R.id.drawerLayout) DrawerLayout drawerLayout;
     @Bind(R.id.rootLayout) CoordinatorLayout rootLayout;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void chooseAppropriateFragment() {
         SharedPreferences preferences = getSharedPreferences(MY_PREF_NAME, MODE_PRIVATE);
-        String accessTokenValue = preferences.getString("accessTokenValue", null);
+        String accessTokenValue = preferences.getString(ACCESS_TOKEN_VALUE, null);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
