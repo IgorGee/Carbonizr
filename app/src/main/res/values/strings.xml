@@ -15,6 +15,6 @@
     <string name="drawer_close_desc">close</string>
     <string name="username_placeholder">Username</string>
     <string name="pin_code_hint">Pin Code</string>
-    <string name="empty_home_page">You Authorized My App.\nMwuahahaha.</string>
+    <string name="empty_home_page">Please select an image.</string>
     <string name="get_pin_text">Get Pin</string>
 </resources>
