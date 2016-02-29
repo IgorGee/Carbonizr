@@ -34,14 +34,6 @@ public class Client {
         verifier = new Verifier(pin);
     }
 
-    public Token getRequestToken() {
-        return requestToken;
-    }
-
-    public void setRequestToken(Token requestToken) {
-        this.requestToken = requestToken;
-    }
-
     public Token getAccessToken() {
         return accessToken;
     }
