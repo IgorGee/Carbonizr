@@ -46,7 +46,11 @@ public class Client {
         return accessToken;
     }
 
-    public void setAccessToken() {
+    public void setAccessToken(Token accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void retrieveAccessToken() {
         accessToken = service.getAccessToken(requestToken, verifier);
     }
 
@@ -66,7 +70,7 @@ public class Client {
         Client client = new Client();
         System.out.println(client.getAuthorizationUrl());
         client.setVerifier(new Scanner(System.in).nextLine());
-        client.setAccessToken();
+        client.retrieveAccessToken();
     }
 
 }
