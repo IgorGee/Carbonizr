@@ -28,6 +28,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.github.scribejava:scribejava-apis:2.2.2'
 
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
     testCompile 'junit:junit:4.12'
 
     // Espresso
