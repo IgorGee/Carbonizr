@@ -3,6 +3,7 @@ package xyz.igorgee.pendantcreator3d;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,13 +21,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.scribejava.core.model.Token;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.shapwaysapi.Client;
@@ -34,12 +39,16 @@ import xyz.igorgee.shapwaysapi.Client;
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends ListFragment {
 
     private final static int SELECT_PHOTO = 46243;
 
+    @Bind(android.R.id.list) ListView list;
+
     Client client;
     String imageTitle;
+    ArrayList<String> files;
+    ArrayAdapter<String> adapter;
 
     @Nullable
     @Override
@@ -47,17 +56,35 @@ public class HomePageFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_homepage, container, false);
         ButterKnife.bind(this, view);
 
+        initializeClient();
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        files = new ArrayList<>();
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, files);
+        setListAdapter(adapter);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        makeSnackbar(v, ((TextView) v).getText().toString());
+    }
+
+    private void initializeClient() {
         client = new Client();
         SharedPreferences preferences = getActivity().
                 getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE);
-        
+
         String accessTokenValue = preferences.getString(MainActivity.ACCESS_TOKEN_VALUE, null);
         String accessTokenSecret = preferences.getString(MainActivity.ACCESS_TOKEN_SECRET, null);
 
         client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
         new connectToClient().execute();
-
-        return view;
     }
 
     private class connectToClient extends AsyncTask<Void, Void, Void> {
@@ -98,8 +125,9 @@ public class HomePageFragment extends Fragment {
 
                 int height = bitmap.getHeight();
                 int width = bitmap.getWidth();
+                imageTitle = new File(imagePath).getName();
 
-                String info = "Title: " + new File(imagePath).getName() + "\n";
+                String info = "Title: " + imageTitle + "\n";
                 info += "Height: " + height + "\n" + "Width: " + width;
 
                 makeAlertDialog(getActivity(), info, android.R.drawable.ic_menu_report_image);
@@ -108,8 +136,8 @@ public class HomePageFragment extends Fragment {
                     makeSnackbar(getActivity().findViewById(R.id.rootLayout),
                             "Image too big.\nMax: 2000px x 2000px");
                 } else {
-                    makeSnackbar(getActivity().findViewById(R.id.rootLayout),
-                            new File(imagePath).getName());
+                    files.add(imageTitle);
+                    adapter.notifyDataSetChanged();
                 }
 
                 cursor.close();

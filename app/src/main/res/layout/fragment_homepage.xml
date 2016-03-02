@@ -25,4 +25,10 @@
         android:src="@drawable/ic_image_white_48dp"
         app:backgroundTint="@color/colorPrimary"/>
 
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
 </RelativeLayout>
