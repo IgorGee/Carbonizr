@@ -44,6 +44,7 @@ public class HomePageFragment extends ListFragment {
     private final static int SELECT_PHOTO = 46243;
 
     @Bind(android.R.id.list) ListView list;
+    @Bind(R.id.empty_home_page_text) TextView textView;
 
     Client client;
     String imageTitle;
@@ -141,6 +142,8 @@ public class HomePageFragment extends ListFragment {
                 }
 
                 cursor.close();
+
+                textView.setVisibility(View.GONE);
             }
         }
     }
