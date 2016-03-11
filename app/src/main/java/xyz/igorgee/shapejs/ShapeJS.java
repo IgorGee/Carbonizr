@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -19,49 +18,31 @@ public class ShapeJS {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    InputStream get3DObject(String jobID) throws IOException{
+    InputStream uploadImageToMe(File image) throws IOException {
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("shapeJS_img", image.getName(),
+                        RequestBody.create(MEDIA_TYPE_JPG, image))
+                .build();
+
         Request request = new Request.Builder()
-                .url(Constants.SAVE_MODEL_CACHED_ENDPOINT.toString() + "?jobID=" + jobID)
+                .url("http://52.90.86.247/image")
+                .post(requestBody)
                 .build();
 
         Response response = client.newCall(request).execute();
         return response.body().byteStream();
     }
 
-    String uploadImage(File image, String jobID) throws IOException {
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("shapeJS_img", image.getName(),
-                        RequestBody.create(MEDIA_TYPE_JPG, image))
-                .addFormDataPart("jobID", jobID)
-                .addFormDataPart("script", Constants.JS_2D_TO_3D.toString())
-                .build();
-
-        Request request = new Request.Builder()
-                .url(Constants.UPDATE_SCENE_ENDPOINT.toString())
-                .post(requestBody)
-                .build();
-
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
     public static void main(String[] args) throws IOException {
         ShapeJS shapeJS = new ShapeJS();
-        String uuid = UUID.randomUUID().toString();
 
         InputStream inputStream = null;
         FileOutputStream generatedObjectFile = null;
 
         try {
-            System.out.println(shapeJS.uploadImage(new File("app/src/main/java/xyz/igorgee/shapejs/key-pendant-kmz.jpg"), uuid));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            generatedObjectFile = new FileOutputStream("app/src/main/java/xyz/igorgee/shapejs/generatedObject3D.stl");
-            inputStream = shapeJS.get3DObject(uuid);
+            inputStream = shapeJS.uploadImageToMe(new File("app/src/main/java/xyz/igorgee/shapejs/key-pendant-kmz.jpg"));
+            generatedObjectFile = new FileOutputStream("app/src/main/java/xyz/igorgee/shapejs/generatedObject3D.g3db");
             int b;
 
             while ((b = inputStream.read()) != -1) {
