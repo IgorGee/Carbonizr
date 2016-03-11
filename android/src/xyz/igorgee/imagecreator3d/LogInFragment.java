@@ -103,18 +103,23 @@ public class LogInFragment extends Fragment {
                     editor.putString(MainActivity.ACCESS_TOKEN_SECRET, accessToken.getSecret());
                     editor.apply();
                 }
-
-                HomePageFragment fragment = new HomePageFragment();
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentPlaceholder, fragment)
-                        .commit();
             } catch (OAuthException e) {
                 makeSnackbar(view, "Sorry, try again.");
                 e.printStackTrace();
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            
+            HomePageFragment fragment = new HomePageFragment();
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentPlaceholder, fragment)
+                    .commit();
         }
     }
 
