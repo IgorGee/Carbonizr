@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="xyz.igorgee.pendantcreator3d.MainActivity"
+    tools:context="xyz.igorgee.imagecreator3d.MainActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.CoordinatorLayout

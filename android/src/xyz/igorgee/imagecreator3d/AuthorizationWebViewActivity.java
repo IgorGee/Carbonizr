@@ -1,4 +1,4 @@
-package xyz.igorgee.pendantcreator3d;
+package xyz.igorgee.imagecreator3d;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.webkit.WebViewClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import xyz.igorgee.pendantcreatorg3dx.R;
 
 public class AuthorizationWebViewActivity extends AppCompatActivity {
 

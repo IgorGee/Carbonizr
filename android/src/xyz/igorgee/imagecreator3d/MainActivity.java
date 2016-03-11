@@ -1,4 +1,4 @@
-package xyz.igorgee.pendantcreator3d;
+package xyz.igorgee.imagecreator3d;
 
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
@@ -14,7 +14,6 @@ import android.view.MenuItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import xyz.igorgee.pendantcreatorg3dx.R;
 
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 

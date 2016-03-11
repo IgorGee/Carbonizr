@@ -1,4 +1,4 @@
-package xyz.igorgee.pendantcreator3d;
+package xyz.igorgee.imagecreator3d;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -21,13 +21,12 @@ import com.github.scribejava.core.model.Token;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import xyz.igorgee.pendantcreatorg3dx.R;
 import xyz.igorgee.shapwaysapi.Client;
 
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class LogInFragment extends Fragment {
-    public static final String EXTRA_URL = "xyz.igorgee.pendantcreator3d.URL";
+    public static final String EXTRA_URL = "xyz.igorgee.imagecreator3d.URL";
 
     Client client;
 

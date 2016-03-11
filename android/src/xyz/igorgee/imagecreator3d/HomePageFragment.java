@@ -1,4 +1,4 @@
-package xyz.igorgee.pendantcreator3d;
+package xyz.igorgee.imagecreator3d;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import xyz.igorgee.pendantcreatorg3dx.R;
 import xyz.igorgee.shapwaysapi.Client;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;

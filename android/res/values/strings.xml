@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PendantCreatorG3DX</string>
-    <string name="title">Pendant Creator</string>
+    <string name="app_name">3D Image Creator</string>
+    <string name="title">3D Image Creator</string>
     <string name="google_sign_in">Sign In With Google</string>
     <string name="facebook_sign_in">Sign In With Facebook</string>
     <string name="spades_string">Spades</string>

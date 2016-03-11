@@ -15,7 +15,7 @@ android {
         instrumentTest.setRoot('tests')
     }
     defaultConfig {
-        applicationId "xyz.igorgee.pendantcreator3d"
+        applicationId "xyz.igorgee.imagecreator3d"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -104,7 +104,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'xyz.igorgee.pendantcreatorg3dx/xyz.igorgee.pendantcreatorg3dx.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'xyz.igorgee.imagecreator3d/AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.

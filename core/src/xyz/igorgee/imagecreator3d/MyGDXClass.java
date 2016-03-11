@@ -1,4 +1,4 @@
-package xyz.igorgee.pendantcreatorg3dx;
+package xyz.igorgee.imagecreator3d;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
