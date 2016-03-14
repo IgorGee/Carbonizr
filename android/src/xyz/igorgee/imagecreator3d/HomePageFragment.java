@@ -24,14 +24,18 @@ import android.widget.TextView;
 import com.github.scribejava.core.model.Token;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
+import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 
-import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class HomePageFragment extends ListFragment {
@@ -42,15 +46,20 @@ public class HomePageFragment extends ListFragment {
     @Bind(R.id.empty_home_page_text) TextView textView;
 
     Client client;
-    String imageTitle;
     ArrayList<String> files;
     ArrayAdapter<String> adapter;
+    Activity thisActivity;
+    File storageDirectory;
+    ShapeJS shapeJS = new ShapeJS();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_homepage, container, false);
         ButterKnife.bind(this, view);
+
+        thisActivity = getActivity();
+        storageDirectory = thisActivity.getFilesDir();
 
         initializeClient();
 
@@ -64,11 +73,24 @@ public class HomePageFragment extends ListFragment {
         files = new ArrayList<>();
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, files);
         setListAdapter(adapter);
+
+        checkExistingFiles();
+    }
+
+    private void checkExistingFiles() {
+        for (final File file : storageDirectory.listFiles()) {
+            String fileName = file.getName();
+            if (fileName.substring(fileName.length() - 5).equals(".g3db")) {
+                files.add(file.getName());
+                textView.setVisibility(View.GONE);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        makeSnackbar(v, ((TextView) v).getText().toString());
+        startActivity(new Intent(getActivity(), ObjectViewer.class));
     }
 
     private void initializeClient() {
@@ -121,25 +143,65 @@ public class HomePageFragment extends ListFragment {
 
                 int height = bitmap.getHeight();
                 int width = bitmap.getWidth();
-                imageTitle = new File(imagePath).getName();
-
-                String info = "Title: " + imageTitle + "\n";
-                info += "Height: " + height + "\n" + "Width: " + width;
-
-                makeAlertDialog(getActivity(), info, android.R.drawable.ic_menu_report_image);
 
                 if (height > 2000 || width > 2000) {
                     makeSnackbar(getActivity().findViewById(R.id.rootLayout),
                             "Image too big.\nMax: 2000px x 2000px");
                 } else {
-                    files.add(imageTitle);
-                    adapter.notifyDataSetChanged();
+                    new GenerateObject(new File(imagePath)).execute();
                 }
 
                 cursor.close();
 
                 textView.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private class GenerateObject extends AsyncTask<Void, Void, Void> {
+
+        File file;
+
+        GenerateObject(File file) {
+            this.file = file;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            InputStream inputStream = null;
+            FileOutputStream generatedObjectFile = null;
+            String filename = file.getName() + ".g3db";
+
+            try {
+                inputStream = shapeJS.uploadImage(file);
+                generatedObjectFile = thisActivity.openFileOutput(filename, Context.MODE_PRIVATE);
+                int b;
+
+                while ((b = inputStream.read()) != -1) {
+                    generatedObjectFile.write(b);
+                }
+
+                files.add(filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (inputStream != null)
+                        inputStream.close();
+                    if (generatedObjectFile != null)
+                        generatedObjectFile.close();
+                } catch (IOException e ) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter.notifyDataSetChanged();
         }
     }
 }
