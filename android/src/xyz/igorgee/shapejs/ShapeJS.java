@@ -18,7 +18,7 @@ public class ShapeJS {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    InputStream uploadImageToMe(File image) throws IOException {
+    public InputStream uploadImage(File image) throws IOException {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("shapeJS_img", image.getName(),
@@ -41,8 +41,9 @@ public class ShapeJS {
         FileOutputStream generatedObjectFile = null;
 
         try {
-            inputStream = shapeJS.uploadImageToMe(new File("app/src/main/java/xyz/igorgee/shapejs/key-pendant-kmz.jpg"));
-            generatedObjectFile = new FileOutputStream("app/src/main/java/xyz/igorgee/shapejs/generatedObject3D.g3db");
+
+            inputStream = shapeJS.uploadImage(new File("3D Image Creator/android/src/xyz/igorgee/shapejs/key-pendant-kmz.jpg"));
+            generatedObjectFile = new FileOutputStream("3D Image Creator/android/src/xyz/igorgee/shapejs/generatedObject3D.g3db");
             int b;
 
             while ((b = inputStream.read()) != -1) {
