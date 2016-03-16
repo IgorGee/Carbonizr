@@ -90,7 +90,11 @@ public class HomePageFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        startActivity(new Intent(getActivity(), ObjectViewer.class));
+        String fileName = ((TextView) v).getText().toString();
+        File model = new File(storageDirectory + "/" + fileName);
+        Intent viewModel = new Intent(getActivity(), ObjectViewer.class);
+        viewModel.putExtra("model", model);
+        startActivity(viewModel);
     }
 
     private void initializeClient() {
