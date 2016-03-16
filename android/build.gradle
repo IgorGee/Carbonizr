@@ -104,7 +104,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'xyz.igorgee.imagecreator3d/AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'xyz.igorgee.imagecreator3d/ObjectViewer'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
