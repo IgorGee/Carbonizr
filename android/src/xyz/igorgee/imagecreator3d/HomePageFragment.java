@@ -141,19 +141,7 @@ public class HomePageFragment extends ListFragment {
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
-
-                int height = bitmap.getHeight();
-                int width = bitmap.getWidth();
-
-                if (height > 2000 || width > 2000) {
-                    makeSnackbar(getActivity().findViewById(R.id.rootLayout),
-                            "Image too big.\nMax: 2000px x 2000px");
-                } else {
-                    new GenerateObject(new File(imagePath)).execute();
-                }
+                new GenerateObject(new File(imagePath)).execute();
 
                 cursor.close();
 
