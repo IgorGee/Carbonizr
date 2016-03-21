@@ -43,4 +43,4 @@ proguard/
 captures/
 
 # Private information
-app/src/main/java/xyz/igorgee/shapwaysapi/Consumer.java
+android/src/xyz/igorgee/shapwaysapi/Consumer.java
