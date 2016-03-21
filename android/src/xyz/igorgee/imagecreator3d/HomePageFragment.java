@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +33,7 @@ import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
+import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
@@ -49,7 +48,8 @@ public class HomePageFragment extends ListFragment {
     ArrayList<String> files;
     ArrayAdapter<String> adapter;
     Activity thisActivity;
-    File storageDirectory;
+    File filesDirectory;
+    File modelsDirectory;
     ShapeJS shapeJS = new ShapeJS();
 
     @Nullable
@@ -59,7 +59,8 @@ public class HomePageFragment extends ListFragment {
         ButterKnife.bind(this, view);
 
         thisActivity = getActivity();
-        storageDirectory = thisActivity.getFilesDir();
+        filesDirectory = thisActivity.getFilesDir();
+        modelsDirectory = new File(filesDirectory + "/models");
 
         initializeClient();
 
@@ -78,12 +79,13 @@ public class HomePageFragment extends ListFragment {
     }
 
     private void checkExistingFiles() {
-        for (final File file : storageDirectory.listFiles()) {
+        if (modelsDirectory.listFiles() == null) {
+            return;
+        }
+        for (final File file : modelsDirectory.listFiles()) {
             String fileName = file.getName();
-            if (fileName.substring(fileName.length() - 5).equals(".g3db")) {
-                files.add(file.getName());
-                textView.setVisibility(View.GONE);
-            }
+            files.add(fileName);
+            textView.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
     }
@@ -91,7 +93,7 @@ public class HomePageFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         String fileName = ((TextView) v).getText().toString();
-        File model = new File(storageDirectory + "/" + fileName);
+        File model = new File(modelsDirectory + "/" + fileName + "/test.g3db");
         Intent viewModel = new Intent(getActivity(), ObjectViewer.class);
         viewModel.putExtra("model", model);
         startActivity(viewModel);
@@ -153,27 +155,33 @@ public class HomePageFragment extends ListFragment {
     private class GenerateObject extends AsyncTask<Void, Void, Void> {
 
         File file;
+        String filename;
 
         GenerateObject(File file) {
             this.file = file;
+            this.filename = file.getName().substring(0, file.getName().indexOf('.'));
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             InputStream inputStream = null;
             FileOutputStream generatedObjectFile = null;
-            String filename = file.getName() + ".g3db";
+            String zipFileName = filename + ".zip";
+            String directoryName = filename;
 
             try {
                 inputStream = shapeJS.uploadImage(file);
-                generatedObjectFile = thisActivity.openFileOutput(filename, Context.MODE_PRIVATE);
+                generatedObjectFile = thisActivity.openFileOutput(zipFileName, Context.MODE_PRIVATE);
                 int b;
 
                 while ((b = inputStream.read()) != -1) {
                     generatedObjectFile.write(b);
                 }
 
-                files.add(filename);
+                JavaUtilities.unzip(new File(filesDirectory + "/" + zipFileName),
+                        new File(modelsDirectory + "/" + directoryName));
+
+                files.add(directoryName);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
