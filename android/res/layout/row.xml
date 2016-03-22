@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight">
+
+    <Button
+        android:id="@+id/button_buy"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentRight="true"
+        android:text="@string/button_purchase"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/button_3d_view"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_toLeftOf="@id/button_buy"
+        android:text="@string/button_3d_view"/>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="@string/image_content_description"
+        android:src="@drawable/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/image_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lorem Ipsum"
+        android:lines="1"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:textSize="30sp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/image"
+        android:layout_toLeftOf="@id/button_3d_view"/>
+
+</RelativeLayout>

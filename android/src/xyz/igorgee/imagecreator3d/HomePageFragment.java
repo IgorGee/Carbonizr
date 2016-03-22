@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,12 +29,9 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.JavaUtilities;
-
-import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class HomePageFragment extends ListFragment {
 
@@ -46,10 +42,10 @@ public class HomePageFragment extends ListFragment {
 
     Client client;
     ArrayList<String> files;
-    ArrayAdapter<String> adapter;
+    CustomAdapter adapter;
     Activity thisActivity;
-    File filesDirectory;
-    File modelsDirectory;
+    public static File filesDirectory;
+    public static File modelsDirectory;
     ShapeJS shapeJS = new ShapeJS();
 
     @Nullable
@@ -72,7 +68,7 @@ public class HomePageFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         files = new ArrayList<>();
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, files);
+        adapter = new CustomAdapter(getActivity(), R.layout.row, R.id.image_name, files);
         setListAdapter(adapter);
 
         checkExistingFiles();
@@ -88,15 +84,6 @@ public class HomePageFragment extends ListFragment {
             textView.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        String fileName = ((TextView) v).getText().toString();
-        File model = new File(modelsDirectory + "/" + fileName + "/test.g3db");
-        Intent viewModel = new Intent(getActivity(), ObjectViewer.class);
-        viewModel.putExtra("model", model);
-        startActivity(viewModel);
     }
 
     private void initializeClient() {

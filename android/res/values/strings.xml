@@ -19,5 +19,8 @@
     <string name="pin_code_hint">Pin Code</string>
     <string name="empty_home_page">Please select an image.</string>
     <string name="get_pin_text">Get Pin</string>
+    <string name="image_content_description">Original Image</string>
+    <string name="button_3d_view">3D</string>
+    <string name="button_purchase">Buy</string>
 
 </resources>
