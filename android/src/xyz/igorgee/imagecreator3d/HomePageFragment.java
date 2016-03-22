@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,9 +23,11 @@ import android.widget.TextView;
 import com.github.scribejava.core.model.Token;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -41,12 +45,15 @@ public class HomePageFragment extends ListFragment {
     @Bind(R.id.empty_home_page_text) TextView textView;
 
     Client client;
-    ArrayList<String> files;
+    ArrayList<Model> models;
     CustomAdapter adapter;
     Activity thisActivity;
     public static File filesDirectory;
     public static File modelsDirectory;
     ShapeJS shapeJS = new ShapeJS();
+
+    BitmapFactory.Options options;
+    Bitmap bitmap;
 
     @Nullable
     @Override
@@ -58,6 +65,9 @@ public class HomePageFragment extends ListFragment {
         filesDirectory = thisActivity.getFilesDir();
         modelsDirectory = new File(filesDirectory + "/models");
 
+        options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
         initializeClient();
 
         return view;
@@ -67,8 +77,8 @@ public class HomePageFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        files = new ArrayList<>();
-        adapter = new CustomAdapter(getActivity(), R.layout.row, R.id.image_name, files);
+        models = new ArrayList<>();
+        adapter = new CustomAdapter(getActivity(), R.layout.row, R.id.image_name, models);
         setListAdapter(adapter);
 
         checkExistingFiles();
@@ -80,7 +90,13 @@ public class HomePageFragment extends ListFragment {
         }
         for (final File file : modelsDirectory.listFiles()) {
             String fileName = file.getName();
-            files.add(fileName);
+            bitmap = BitmapFactory.decodeFile(file + "/image.jpg", options);
+            Bitmap scaled = null;
+            if (bitmap != null) {
+                int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
+                scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
+            }
+            models.add(new Model(fileName, file, scaled));
             textView.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
@@ -143,10 +159,14 @@ public class HomePageFragment extends ListFragment {
 
         File file;
         String filename;
+        Model model;
+        Bitmap bitmap;
 
         GenerateObject(File file) {
             this.file = file;
             this.filename = file.getName().substring(0, file.getName().indexOf('.'));
+
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
         }
 
         @Override
@@ -154,7 +174,6 @@ public class HomePageFragment extends ListFragment {
             InputStream inputStream = null;
             FileOutputStream generatedObjectFile = null;
             String zipFileName = filename + ".zip";
-            String directoryName = filename;
 
             try {
                 inputStream = shapeJS.uploadImage(file);
@@ -166,9 +185,10 @@ public class HomePageFragment extends ListFragment {
                 }
 
                 JavaUtilities.unzip(new File(filesDirectory + "/" + zipFileName),
-                        new File(modelsDirectory + "/" + directoryName));
+                        new File(modelsDirectory + "/" + filename));
 
-                files.add(directoryName);
+                copyFile(file, new File(modelsDirectory + "/" + filename + "/" + "image.jpg"));
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -188,7 +208,28 @@ public class HomePageFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            model = new Model(filename, new File(modelsDirectory + "/" + filename), bitmap);
+            models.add(model);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!sourceFile.exists()) {
+            return;
+        }
+
+        FileChannel source;
+        FileChannel destination;
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        if (source != null) {
+            destination.transferFrom(source, 0, source.size());
+        }
+        if (source != null) {
+            source.close();
+        }
+        destination.close();
     }
 }

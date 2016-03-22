@@ -21,7 +21,7 @@ import xyz.igorgee.utilities.UIUtilities;
 
 public class CustomAdapter extends ArrayAdapter {
     private final Context context;
-    private final ArrayList<String> items;
+    private final ArrayList<Model> items;
 
     private LayoutInflater inflater;
 
@@ -50,7 +50,7 @@ public class CustomAdapter extends ArrayAdapter {
         }
     }
 
-    public CustomAdapter(Context context, int resource, int textViewResourceId, ArrayList<String> objects) {
+    public CustomAdapter(Context context, int resource, int textViewResourceId, ArrayList<Model> objects) {
         super(context, resource, textViewResourceId, objects);
         this.context = context;
         this.items = objects;
@@ -71,7 +71,8 @@ public class CustomAdapter extends ArrayAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.textView.setText(items.get(position));
+        viewHolder.textView.setText(items.get(position).getName());
+        viewHolder.image.setImageBitmap(items.get(position).getImage());
 
         return view;
     }
