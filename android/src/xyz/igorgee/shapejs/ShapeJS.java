@@ -33,30 +33,4 @@ public class ShapeJS {
         Response response = client.newCall(request).execute();
         return response.body().byteStream();
     }
-
-    public static void main(String[] args) throws IOException {
-        ShapeJS shapeJS = new ShapeJS();
-
-        InputStream inputStream = null;
-        FileOutputStream generatedObjectFile = null;
-
-        try {
-
-            inputStream = shapeJS.uploadImage(new File("3D Image Creator/android/src/xyz/igorgee/shapejs/key-pendant-kmz.jpg"));
-            generatedObjectFile = new FileOutputStream("3D Image Creator/android/src/xyz/igorgee/shapejs/generatedObject3D.g3db");
-            int b;
-
-            while ((b = inputStream.read()) != -1) {
-                generatedObjectFile.write(b);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null)
-                inputStream.close();
-            if (generatedObjectFile != null)
-                generatedObjectFile.close();
-        }
-    }
-
 }
