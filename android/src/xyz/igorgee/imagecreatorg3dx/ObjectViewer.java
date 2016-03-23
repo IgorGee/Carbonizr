@@ -19,4 +19,10 @@ public class ObjectViewer extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new ModelViewer(object), config);
 	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		this.finish();
+	}
 }
