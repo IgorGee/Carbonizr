@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
+import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
 
 public class HomePageFragment extends ListFragment {
@@ -88,12 +89,8 @@ public class HomePageFragment extends ListFragment {
         }
         for (final File file : modelsDirectory.listFiles()) {
             String fileName = file.getName();
-            bitmap = BitmapFactory.decodeFile(file + "/image.jpg", options);
-            Bitmap scaled = null;
-            if (bitmap != null) {
-                int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
-                scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
-            }
+            bitmap = ImageHelper.decodeSampledBitmapFromResource(
+                    new File(file + "/image.jpg"), 64, 64);
             models.add(new Model(fileName, file, bitmap));
             textView.setVisibility(View.GONE);
         }

@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
+import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.UIUtilities;
 
 public class CustomAdapter extends ArrayAdapter {
@@ -74,13 +75,9 @@ public class CustomAdapter extends ArrayAdapter {
 
         viewHolder.textView.setText(items.get(position).getName());
 
-        Bitmap original = items.get(position).getImage();
-        Bitmap scaled = null;
-        if (original != null) {
-            int nh = (int) (original.getHeight() * (512 / original.getWidth()));
-            scaled = Bitmap.createScaledBitmap(original, 512, nh, true);
-        }
-        viewHolder.image.setImageBitmap(scaled);
+        Bitmap bitmap = ImageHelper.decodeSampledBitmapFromResource(
+                new File(items.get(position).getLocation() + "/image.jpg"), 64, 64);
+        viewHolder.image.setImageBitmap(bitmap);
 
         return view;
     }
