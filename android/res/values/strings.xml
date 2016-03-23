@@ -22,5 +22,6 @@
     <string name="image_content_description">Original Image</string>
     <string name="button_3d_view">3D</string>
     <string name="button_purchase">Buy</string>
+    <string name="add_to_cart_text">Added to Cart!</string>
 
 </resources>

@@ -7,8 +7,6 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth10aService;
 
-import java.util.Scanner;
-
 
 public class Client {
 
@@ -57,12 +55,4 @@ public class Client {
         service.signRequest(accessToken, request);
         return request.send().getBody();
     }
-
-    public static void main(String[] args) {
-        Client client = new Client();
-        System.out.println(client.getAuthorizationUrl());
-        client.setVerifier(new Scanner(System.in).nextLine());
-        client.retrieveAccessToken();
-    }
-
 }

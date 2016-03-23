@@ -6,14 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +34,16 @@ import xyz.igorgee.utilities.JavaUtilities;
 public class HomePageFragment extends ListFragment {
 
     private final static int SELECT_PHOTO = 46243;
+    private final static String MODELS_DIRECTORY_NAME = "models";
+
+    public static File filesDirectory;
+    public static File modelsDirectory;
 
     @Bind(R.id.empty_home_page_text) TextView textView;
 
     Client client;
     ArrayList<Model> models;
     CustomAdapter adapter;
-    Activity thisActivity;
-    public static File filesDirectory;
-    public static File modelsDirectory;
-    ShapeJS shapeJS = new ShapeJS();
 
     @Nullable
     @Override
@@ -54,13 +51,23 @@ public class HomePageFragment extends ListFragment {
         View view =  inflater.inflate(R.layout.fragment_homepage, container, false);
         ButterKnife.bind(this, view);
 
-        thisActivity = getActivity();
-        filesDirectory = thisActivity.getFilesDir();
-        modelsDirectory = new File(filesDirectory + "/models");
+        filesDirectory = getActivity().getFilesDir();
+        modelsDirectory = new File(filesDirectory, MODELS_DIRECTORY_NAME);
 
         initializeClient();
 
         return view;
+    }
+
+    private void initializeClient() {
+        client = new Client();
+        SharedPreferences preferences = getActivity().
+                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE);
+
+        String accessTokenValue = preferences.getString(MainActivity.ACCESS_TOKEN_VALUE, null);
+        String accessTokenSecret = preferences.getString(MainActivity.ACCESS_TOKEN_SECRET, null);
+
+        client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
     }
 
     @Override
@@ -75,36 +82,13 @@ public class HomePageFragment extends ListFragment {
     }
 
     private void checkExistingFiles() {
-        if (modelsDirectory.listFiles() == null) {
-            return;
-        }
-        for (final File file : modelsDirectory.listFiles()) {
-            String fileName = file.getName();
-            models.add(new Model(fileName, file));
-            textView.setVisibility(View.GONE);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    private void initializeClient() {
-        client = new Client();
-        SharedPreferences preferences = getActivity().
-                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE);
-
-        String accessTokenValue = preferences.getString(MainActivity.ACCESS_TOKEN_VALUE, null);
-        String accessTokenSecret = preferences.getString(MainActivity.ACCESS_TOKEN_SECRET, null);
-
-        client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
-        new connectToClient().execute();
-    }
-
-    private class connectToClient extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Log.d("TEST", client.getCart());
-
-            return null;
+        if (modelsDirectory.listFiles() != null) {
+            for (final File file : modelsDirectory.listFiles()) {
+                String fileName = file.getName();
+                models.add(new Model(fileName, file));
+                textView.setVisibility(View.GONE);
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -130,7 +114,7 @@ public class HomePageFragment extends ListFragment {
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
-                new GenerateObject(new File(imagePath)).execute();
+                new GenerateObject(new File(imagePath), getActivity()).execute();
 
                 cursor.close();
 
@@ -143,30 +127,32 @@ public class HomePageFragment extends ListFragment {
 
         File file;
         String filename;
-        Model model;
+        Context context;
+        ShapeJS shapeJS = new ShapeJS();
 
-        GenerateObject(File file) {
+        GenerateObject(File file, Context context) {
             this.file = file;
             this.filename = file.getName().substring(0, file.getName().indexOf('.'));
+            this.context = context;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             InputStream inputStream = null;
-            FileOutputStream generatedObjectFile = null;
+            FileOutputStream outputStream = null;
             String zipFileName = filename + ".zip";
 
             try {
                 inputStream = shapeJS.uploadImage(file);
-                generatedObjectFile = thisActivity.openFileOutput(zipFileName, Context.MODE_PRIVATE);
-                int b;
+                outputStream = context.openFileOutput(zipFileName, Context.MODE_PRIVATE);
 
+                int b;
                 while ((b = inputStream.read()) != -1) {
-                    generatedObjectFile.write(b);
+                    outputStream.write(b);
                 }
 
-                JavaUtilities.unzip(new File(filesDirectory + "/" + zipFileName),
-                        new File(modelsDirectory + "/" + filename));
+                JavaUtilities.unzip(new File(filesDirectory, zipFileName),
+                        new File(modelsDirectory, filename));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -174,8 +160,8 @@ public class HomePageFragment extends ListFragment {
                 try {
                     if (inputStream != null)
                         inputStream.close();
-                    if (generatedObjectFile != null)
-                        generatedObjectFile.close();
+                    if (outputStream != null)
+                        outputStream.close();
                 } catch (IOException e ) {
                     e.printStackTrace();
                 }
@@ -188,7 +174,7 @@ public class HomePageFragment extends ListFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            model = new Model(filename, new File(modelsDirectory + "/" + filename));
+            Model model = new Model(filename, new File(modelsDirectory, filename));
             models.add(model);
             adapter.notifyDataSetChanged();
         }
