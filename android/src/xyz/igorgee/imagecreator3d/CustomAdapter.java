@@ -2,6 +2,7 @@ package xyz.igorgee.imagecreator3d;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,14 @@ public class CustomAdapter extends ArrayAdapter {
         }
 
         viewHolder.textView.setText(items.get(position).getName());
-        viewHolder.image.setImageBitmap(items.get(position).getImage());
+
+        Bitmap original = items.get(position).getImage();
+        Bitmap scaled = null;
+        if (original != null) {
+            int nh = (int) (original.getHeight() * (512 / original.getWidth()));
+            scaled = Bitmap.createScaledBitmap(original, 512, nh, true);
+        }
+        viewHolder.image.setImageBitmap(scaled);
 
         return view;
     }

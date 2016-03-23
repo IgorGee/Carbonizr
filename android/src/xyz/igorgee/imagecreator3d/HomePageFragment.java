@@ -96,7 +96,7 @@ public class HomePageFragment extends ListFragment {
                 int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
                 scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
             }
-            models.add(new Model(fileName, file, scaled));
+            models.add(new Model(fileName, file, bitmap));
             textView.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
