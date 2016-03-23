@@ -2,7 +2,6 @@ package xyz.igorgee.imagecreator3d;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
-import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.UIUtilities;
 
 public class CustomAdapter extends ArrayAdapter {
@@ -28,7 +26,6 @@ public class CustomAdapter extends ArrayAdapter {
     private LayoutInflater inflater;
 
     class ViewHolder {
-        @Bind(R.id.image) ImageView image;
         @Bind(R.id.image_name) TextView textView;
         @Bind(R.id.button_buy) Button buy;
         @Bind(R.id.button_3d_view) Button view3d;
@@ -74,10 +71,6 @@ public class CustomAdapter extends ArrayAdapter {
         }
 
         viewHolder.textView.setText(items.get(position).getName());
-
-        Bitmap bitmap = ImageHelper.decodeSampledBitmapFromResource(
-                new File(items.get(position).getLocation() + "/image.jpg"), 64, 64);
-        viewHolder.image.setImageBitmap(bitmap);
 
         return view;
     }

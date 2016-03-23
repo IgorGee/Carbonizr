@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
-import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
 
 public class HomePageFragment extends ListFragment {
@@ -51,9 +50,6 @@ public class HomePageFragment extends ListFragment {
     public static File modelsDirectory;
     ShapeJS shapeJS = new ShapeJS();
 
-    BitmapFactory.Options options;
-    Bitmap bitmap;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,9 +59,6 @@ public class HomePageFragment extends ListFragment {
         thisActivity = getActivity();
         filesDirectory = thisActivity.getFilesDir();
         modelsDirectory = new File(filesDirectory + "/models");
-
-        options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
         initializeClient();
 
@@ -89,9 +82,7 @@ public class HomePageFragment extends ListFragment {
         }
         for (final File file : modelsDirectory.listFiles()) {
             String fileName = file.getName();
-            bitmap = ImageHelper.decodeSampledBitmapFromResource(
-                    new File(file + "/image.jpg"), 64, 64);
-            models.add(new Model(fileName, file, bitmap));
+            models.add(new Model(fileName, file));
             textView.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
@@ -155,13 +146,10 @@ public class HomePageFragment extends ListFragment {
         File file;
         String filename;
         Model model;
-        Bitmap bitmap;
 
         GenerateObject(File file) {
             this.file = file;
             this.filename = file.getName().substring(0, file.getName().indexOf('.'));
-
-            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
         }
 
         @Override
@@ -181,8 +169,6 @@ public class HomePageFragment extends ListFragment {
 
                 JavaUtilities.unzip(new File(filesDirectory + "/" + zipFileName),
                         new File(modelsDirectory + "/" + filename));
-
-                JavaUtilities.copyFile(file, new File(modelsDirectory + "/" + filename + "/" + "image.jpg"));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -204,7 +190,7 @@ public class HomePageFragment extends ListFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            model = new Model(filename, new File(modelsDirectory + "/" + filename), bitmap);
+            model = new Model(filename, new File(modelsDirectory + "/" + filename));
             models.add(model);
             adapter.notifyDataSetChanged();
         }
