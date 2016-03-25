@@ -5,7 +5,7 @@ import java.io.File;
 public class Model {
     String name;
     File location;
-    String modelID;
+    Integer modelID;
 
     public Model(String name, File location) {
         this.name = name;
@@ -28,11 +28,11 @@ public class Model {
         this.location = location;
     }
 
-    public String getModelID() {
+    public Integer getModelID() {
         return modelID;
     }
 
-    public void setModelID(String modelID) {
+    public void setModelID(Integer modelID) {
         this.modelID = modelID;
     }
 }
