@@ -38,4 +38,18 @@ public class JavaUtilities {
             zipInputStream.close();
         }
     }
+
+    public static byte[] loadFileAsBytesArray(File file) {
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            inputStream.read(bytes, 0, length);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes;
+    }
 }
