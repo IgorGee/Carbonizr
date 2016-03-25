@@ -3,7 +3,7 @@ package xyz.igorgee.shapwaysapi;
 public enum Discovery {
     OAUTH1("/oauth1"),
     API("/api"),
-    CART("/orders/cart/v1"),
+    CART("/cart/v1"),
     MATERIALS("/materials/v1"),
     MODELS("/models/v1"),
     PRINTERS("/printers/v1"),
