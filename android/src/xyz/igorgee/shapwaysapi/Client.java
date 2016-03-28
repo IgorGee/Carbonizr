@@ -1,9 +1,11 @@
 package xyz.igorgee.shapwaysapi;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.model.Verifier;
@@ -59,8 +61,7 @@ public class Client {
         request = new OAuthRequest(Verb.POST, Discovery.MODELS.toString(), service);
         JSONObject json = createJSONObject(file, filename);
         request.addPayload(json.toString());
-        service.signRequest(accessToken, request);
-        return request.send().getBody();
+        return responseTo(request);
     }
 
     private JSONObject createJSONObject(File file, String filename) {
@@ -84,18 +85,11 @@ public class Client {
         return json;
     }
 
-    public String getCart() {
-        request = new OAuthRequest(Verb.GET, Discovery.CART.toString(), service);
-        service.signRequest(accessToken, request);
-        return request.send().getBody();
-    }
-
     public String addToCart(int modelId) {
         request = new OAuthRequest(Verb.POST, Discovery.CART.toString(), service);
         JSONObject json = createAddToCartJsonObject(modelId);
         request.addPayload(json.toString());
-        service.signRequest(accessToken, request);
-        return request.send().getBody();
+        return responseTo(request);
     }
 
     public JSONObject createAddToCartJsonObject(int modelId) {
@@ -110,9 +104,17 @@ public class Client {
         return jsonObject;
     }
 
-    public String getOrder() {
-        request = new OAuthRequest(Verb.GET, Discovery.ORDER.toString(), service);
+    public String responseTo(OAuthRequest request) {
         service.signRequest(accessToken, request);
-        return request.send().getBody();
+        Response response = request.send();
+
+        String responseFormat = "Code: %s %s\nHeaders:\n%s\nBody:\n%s";
+        Log.d("REQUEST", request.toString());
+        Log.d("HTTP-LOG", String.format(responseFormat,
+                response.getCode(), response.getMessage(),
+                response.getHeaders(),
+                response.getBody()));
+
+        return response.getBody();
     }
 }

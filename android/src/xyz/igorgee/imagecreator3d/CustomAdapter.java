@@ -3,7 +3,6 @@ package xyz.igorgee.imagecreator3d;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,6 @@ public class CustomAdapter extends ArrayAdapter {
 
                 if (models.get(position).getModelID() == null) {
                     String response = HomePageFragment.client.uploadModel(uploadModel, baseFileName);
-                    Log.d("UPLOAD", response);
 
                     try {
                         json = new JSONObject(response);
@@ -94,8 +92,7 @@ public class CustomAdapter extends ArrayAdapter {
                     modelID = models.get(position).modelID;
                 }
 
-                String addToCartResponse = HomePageFragment.client.addToCart(modelID);
-                Log.d("ADDCART" + modelID, addToCartResponse);
+                HomePageFragment.client.addToCart(modelID);
 
                 return null;
             }
