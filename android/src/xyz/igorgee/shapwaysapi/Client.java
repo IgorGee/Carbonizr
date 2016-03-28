@@ -90,6 +90,26 @@ public class Client {
         return request.send().getBody();
     }
 
+    public String addToCart(int modelId) {
+        request = new OAuthRequest(Verb.POST, Discovery.CART.toString(), service);
+        JSONObject json = createAddToCartJsonObject(modelId);
+        request.addPayload(json.toString());
+        service.signRequest(accessToken, request);
+        return request.send().getBody();
+    }
+
+    public JSONObject createAddToCartJsonObject(int modelId) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("modelId", modelId);
+            jsonObject.put("materialId", 6);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
     public String getOrder() {
         request = new OAuthRequest(Verb.GET, Discovery.ORDER.toString(), service);
         service.signRequest(accessToken, request);
