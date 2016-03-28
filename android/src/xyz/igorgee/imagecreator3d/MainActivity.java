@@ -1,7 +1,10 @@
 package xyz.igorgee.imagecreator3d;
 
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -14,8 +17,6 @@ import android.view.MenuItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -87,21 +88,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.spades:
-                makeSnackbar(rootLayout, R.string.spades_string);
-                break;
-            case R.id.hearts:
-                makeSnackbar(rootLayout, R.string.hearts_string);
-                break;
-            case R.id.clovers:
-                makeSnackbar(rootLayout, R.string.clovers_string);
-                break;
-            case R.id.diamonds:
-                makeSnackbar(rootLayout, R.string.diamonds_string);
-                break;
-            case R.id.custom:
-                makeSnackbar(rootLayout, R.string.custom_string);
-                break;
+            // TODO: Create your own checkout page.
+            case R.id.cart_browser:
+                String urlString="https://shapeways.com/cart";
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    this.startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    this.startActivity(intent);
+                }
         }
 
         return false;

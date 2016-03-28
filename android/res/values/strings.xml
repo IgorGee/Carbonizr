@@ -5,11 +5,7 @@
     <string name="title">3D Image Creator</string>
     <string name="google_sign_in">Sign In With Google</string>
     <string name="facebook_sign_in">Sign In With Facebook</string>
-    <string name="spades_string">Spades</string>
-    <string name="hearts_string">Hearts</string>
-    <string name="clovers_string">Clovers</string>
-    <string name="diamonds_string">Diamonds</string>
-    <string name="custom_string">Custom</string>
+    <string name="cart_browser_string">Cart</string>
     <string name="authenticate_button_text">Authorize</string>
 
     <string name="navbar_image_content_description">Navigation Bar background image</string>
