@@ -94,9 +94,8 @@ public class CustomAdapter extends ArrayAdapter {
                     modelID = models.get(position).modelID;
                 }
 
-//                String addToCartResponse = HomePageFragment.client.addToCart(modelID);
-//                Log.d("ADDCART", String.valueOf(modelID));
-//                Log.d("ADDCART", addToCartResponse);
+                String addToCartResponse = HomePageFragment.client.addToCart(modelID);
+                Log.d("ADDCART" + modelID, addToCartResponse);
 
                 return null;
             }
