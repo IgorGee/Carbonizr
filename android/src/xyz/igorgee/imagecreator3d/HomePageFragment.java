@@ -41,7 +41,7 @@ public class HomePageFragment extends ListFragment {
 
     @Bind(R.id.empty_home_page_text) TextView textView;
 
-    Client client;
+    public static Client client;
     ArrayList<Model> models;
     CustomAdapter adapter;
 
