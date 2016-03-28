@@ -1,6 +1,5 @@
 package xyz.igorgee.shapwaysapi;
 
-import android.util.Base64;
 import android.util.Log;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -11,14 +10,11 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth10aService;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
-import xyz.igorgee.utilities.JavaUtilities;
+import xyz.igorgee.utilities.CreateJson;
 
 
 public class Client {
@@ -59,49 +55,16 @@ public class Client {
 
     public String uploadModel(File file, String filename) {
         request = new OAuthRequest(Verb.POST, Discovery.MODELS.toString(), service);
-        JSONObject json = createJSONObject(file, filename);
+        JSONObject json = CreateJson.uploadFile(file, filename);
         request.addPayload(json.toString());
         return responseTo(request);
-    }
-
-    private JSONObject createJSONObject(File file, String filename) {
-        JSONObject json = new JSONObject();
-        try {
-            String encodedFile = Base64.encodeToString(JavaUtilities.loadFileAsBytesArray(file), Base64.DEFAULT);
-            String urlEncoded = null;
-            try {
-                urlEncoded = URLEncoder.encode(encodedFile, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            json.put("file", urlEncoded);
-            json.put("fileName", filename);
-            json.put("hasRightsToModel", 1);
-            json.put("acceptTermsAndConditions", 1);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        System.out.println(json);
-        return json;
     }
 
     public String addToCart(int modelId) {
         request = new OAuthRequest(Verb.POST, Discovery.CART.toString(), service);
-        JSONObject json = createAddToCartJsonObject(modelId);
+        JSONObject json = CreateJson.addToCart(modelId);
         request.addPayload(json.toString());
         return responseTo(request);
-    }
-
-    public JSONObject createAddToCartJsonObject(int modelId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("modelId", modelId);
-            jsonObject.put("materialId", 6);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return jsonObject;
     }
 
     public String responseTo(OAuthRequest request) {
