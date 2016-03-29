@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +130,7 @@ public class HomePageFragment extends ListFragment {
 
         File file;
         String filename;
+        File modelDirectory;
         Context context;
         ShapeJS shapeJS = new ShapeJS();
         boolean error = false;
@@ -137,31 +139,33 @@ public class HomePageFragment extends ListFragment {
             this.file = file;
             this.filename = file.getName().substring(0, file.getName().indexOf('.'));
             this.context = context;
+            modelDirectory = new File(modelsDirectory, filename);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             InputStream inputStream = null;
             FileOutputStream outputStream = null;
-            String zipFileName = filename + ".zip";
+            File zipFile = new File(filesDirectory, filename + ".zip");
 
             try {
                 inputStream = shapeJS.uploadImage(file);
-                outputStream = context.openFileOutput(zipFileName, Context.MODE_PRIVATE);
+                outputStream = context.openFileOutput(zipFile.getName(), Context.MODE_PRIVATE);
 
                 int b;
                 while ((b = inputStream.read()) != -1) {
                     outputStream.write(b);
                 }
 
-                JavaUtilities.unzip(new File(filesDirectory, zipFileName),
-                        new File(modelsDirectory, filename));
+                JavaUtilities.unzip(zipFile, modelDirectory);
 
             } catch (IOException e) {
                 error = true;
                 e.printStackTrace();
             } finally {
                 try {
+                    if (!zipFile.delete())
+                        Log.e("GENERATEOBJECT", "Zip file wasn't deleted");
                     if (inputStream != null)
                         inputStream.close();
                     if (outputStream != null)
