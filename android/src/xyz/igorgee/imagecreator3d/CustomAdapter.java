@@ -22,6 +22,8 @@ import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 import xyz.igorgee.utilities.UIUtilities;
 
+import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
+
 public class CustomAdapter extends ArrayAdapter {
     private final Context context;
     private final ArrayList<Model> models;
@@ -52,9 +54,14 @@ public class CustomAdapter extends ArrayAdapter {
             updateBaseFileName();
             String previewFilename = baseFileName + "/test.g3db";
             File previewModel = new File(HomePageFragment.modelsDirectory, previewFilename);
-            Intent viewModel = new Intent(context, ObjectViewer.class);
-            viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
-            context.startActivity(viewModel);
+
+            if (previewModel.exists()) {
+                Intent viewModel = new Intent(context, ObjectViewer.class);
+                viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
+                context.startActivity(viewModel);
+            } else {
+                makeAlertDialog(context, "File not found.");
+            }
         }
 
         private void updateBaseFileName() {
