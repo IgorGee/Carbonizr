@@ -31,6 +31,8 @@ import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.JavaUtilities;
 
+import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
+
 public class HomePageFragment extends ListFragment {
 
     private final static int SELECT_PHOTO = 46243;
@@ -129,6 +131,7 @@ public class HomePageFragment extends ListFragment {
         String filename;
         Context context;
         ShapeJS shapeJS = new ShapeJS();
+        boolean error = false;
 
         GenerateObject(File file, Context context) {
             this.file = file;
@@ -155,6 +158,7 @@ public class HomePageFragment extends ListFragment {
                         new File(modelsDirectory, filename));
 
             } catch (IOException e) {
+                error = true;
                 e.printStackTrace();
             } finally {
                 try {
@@ -174,9 +178,13 @@ public class HomePageFragment extends ListFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            Model model = new Model(filename, new File(modelsDirectory, filename));
-            models.add(model);
-            adapter.notifyDataSetChanged();
+            if (error) {
+                makeAlertDialog(context, "Sorry, something went wrong. Try again in a few minutes.");
+            } else {
+                Model model = new Model(filename, new File(modelsDirectory, filename));
+                models.add(model);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }
