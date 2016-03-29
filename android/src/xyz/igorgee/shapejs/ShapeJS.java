@@ -1,9 +1,9 @@
 package xyz.igorgee.shapejs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -18,7 +18,9 @@ public class ShapeJS {
     private static final String ENDPOINT = "http://52.90.86.247/image";
     public static final String SHAPE_JS_IMAGE_KEY = "shapeJS_img";
 
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .readTimeout(20, TimeUnit.SECONDS)
+            .build();
 
     public InputStream uploadImage(File image) throws IOException {
         RequestBody requestBody = new MultipartBody.Builder()
@@ -33,6 +35,9 @@ public class ShapeJS {
                 .build();
 
         Response response = client.newCall(request).execute();
+
+        if (!response.isSuccessful()) throw new IOException("Unsuccessful response");
+
         return response.body().byteStream();
     }
 }
