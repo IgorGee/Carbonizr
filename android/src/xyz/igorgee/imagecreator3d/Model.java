@@ -4,7 +4,7 @@ import java.io.File;
 
 public class Model {
     String name;
-    File location;
+    File location; // Folder that contains the g3db and stl files.
     Integer modelID;
 
     public Model(String name, File location) {
