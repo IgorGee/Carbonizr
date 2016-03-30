@@ -13,6 +13,9 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -53,6 +56,8 @@ public class HomePageFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_homepage, container, false);
         ButterKnife.bind(this, view);
+
+        setHasOptionsMenu(true);
 
         filesDirectory = getActivity().getFilesDir();
         modelsDirectory = new File(filesDirectory, MODELS_DIRECTORY_NAME);
@@ -190,5 +195,30 @@ public class HomePageFragment extends ListFragment {
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+
+    private void deleteAllModels() {
+        JavaUtilities.deleteDirectory(modelsDirectory);
+        models.clear();
+        adapter.notifyDataSetChanged();
+        textView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.homepage_toolbar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.clear_list:
+                deleteAllModels();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
