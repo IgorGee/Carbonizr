@@ -3,6 +3,7 @@ package xyz.igorgee.imagecreator3d;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,8 @@ public class CustomAdapter extends ArrayAdapter {
         @Bind(R.id.button_buy) Button buy;
         @Bind(R.id.button_3d_view) Button view3d;
 
-        String baseFileName;
         int position;
+        File modelDirectory;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -42,30 +43,26 @@ public class CustomAdapter extends ArrayAdapter {
 
         @OnClick(R.id.button_buy)
         public void buyModel(View view) {
-            updateBaseFileName();
-            String uploadFilename = baseFileName + "/test.stl";
-            File uploadModel = new File(HomePageFragment.modelsDirectory, uploadFilename);
+            String uploadFilename = modelDirectory + "/test.stl";
+            File uploadModel = new File(uploadFilename);
             new UploadModelAsyncTask(uploadModel, uploadModel.getName(), position).execute();
             UIUtilities.makeSnackbar(view, R.string.add_to_cart_text);
         }
 
         @OnClick(R.id.button_3d_view)
         public void viewIn3D(View view) {
-            updateBaseFileName();
-            String previewFilename = baseFileName + "/test.g3db";
-            File previewModel = new File(HomePageFragment.modelsDirectory, previewFilename);
+            String previewFilename = modelDirectory + "/test.g3db";
+            File previewModel = new File(previewFilename);
 
             if (previewModel.exists()) {
+                Log.d("FILES", "Opened: " + previewModel.getAbsolutePath());
                 Intent viewModel = new Intent(context, ObjectViewer.class);
                 viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
                 context.startActivity(viewModel);
             } else {
                 makeAlertDialog(context, "File not found.");
+                Log.e("FILES", "Tried to open: " + previewModel.getAbsolutePath());
             }
-        }
-
-        private void updateBaseFileName() {
-            baseFileName = textView.getText().toString();
         }
 
         class UploadModelAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -136,6 +133,7 @@ public class CustomAdapter extends ArrayAdapter {
 
         holder.position = position;
         holder.textView.setText(models.get(position).getName());
+        holder.modelDirectory = models.get(position).getLocation();
 
         return view;
     }

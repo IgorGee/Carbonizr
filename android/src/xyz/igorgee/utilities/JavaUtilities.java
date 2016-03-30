@@ -11,6 +11,8 @@ import java.util.zip.ZipInputStream;
 
 public class JavaUtilities {
 
+    public static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' };
+
     public static void unzip(File zipFile, File targetDirectory) throws IOException {
         ZipInputStream zipInputStream = new ZipInputStream(
                 new BufferedInputStream(new FileInputStream(zipFile)));

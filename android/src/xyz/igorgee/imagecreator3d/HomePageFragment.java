@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -142,9 +143,17 @@ public class HomePageFragment extends ListFragment {
 
         GenerateObject(File file, Context context) {
             this.file = file;
-            this.filename = file.getName().substring(0, file.getName().indexOf('.'));
+            if (file.getName().contains("."))
+                filename = file.getName().substring(0, file.getName().indexOf('.'));
+            else
+                filename = file.getName();
             this.context = context;
-            modelDirectory = new File(modelsDirectory, filename);
+            Log.d("FILENAMEDATE", filename);
+            String modelDirectoryName = (filename + new Date().toString()).replace(" ", "");
+            for (Character c : JavaUtilities.ILLEGAL_CHARACTERS)
+                modelDirectoryName = modelDirectoryName.replace(c.toString(), "");
+            modelDirectory = new File(modelsDirectory, modelDirectoryName);
+            Log.d("FILENAMEDATE", modelDirectory.getName());
         }
 
         @Override
@@ -190,7 +199,7 @@ public class HomePageFragment extends ListFragment {
             if (error) {
                 makeAlertDialog(context, "Sorry, something went wrong. Try again in a few minutes.");
             } else {
-                Model model = new Model(filename, new File(modelsDirectory, filename));
+                Model model = new Model(filename, modelDirectory);
                 models.add(model);
                 adapter.notifyDataSetChanged();
             }
