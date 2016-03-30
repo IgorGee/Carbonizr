@@ -92,12 +92,15 @@ public class HomePageFragment extends ListFragment {
 
     private void checkExistingFiles() {
         if (modelsDirectory.listFiles() != null) {
-            for (final File file : modelsDirectory.listFiles()) {
-                String fileName = file.getName();
-                models.add(new Model(fileName, file));
-                textView.setVisibility(View.GONE);
+            for (final File directory : modelsDirectory.listFiles()) {
+                for (final File file : directory.listFiles())
+                    if (file.getName().endsWith(".stl")) {
+                        String fileName = file.getName().substring(0, file.getName().length() - 4);
+                        models.add(new Model(fileName, directory));
+                        textView.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
+                    }
             }
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -172,6 +175,11 @@ public class HomePageFragment extends ListFragment {
                 }
 
                 JavaUtilities.unzip(zipFile, modelDirectory);
+
+                for (File file : modelDirectory.listFiles()) {
+                    file.renameTo(new File(modelDirectory,
+                            filename + file.getName().substring(file.getName().indexOf('.'))));
+                }
 
             } catch (IOException e) {
                 error = true;

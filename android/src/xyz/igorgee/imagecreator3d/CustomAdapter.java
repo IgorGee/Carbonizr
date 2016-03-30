@@ -43,16 +43,14 @@ public class CustomAdapter extends ArrayAdapter {
 
         @OnClick(R.id.button_buy)
         public void buyModel(View view) {
-            String uploadFilename = modelDirectory + "/test.stl";
-            File uploadModel = new File(uploadFilename);
+            File uploadModel = new File(modelDirectory, models.get(position).getName() + ".stl");
             new UploadModelAsyncTask(uploadModel, uploadModel.getName(), position).execute();
             UIUtilities.makeSnackbar(view, R.string.add_to_cart_text);
         }
 
         @OnClick(R.id.button_3d_view)
         public void viewIn3D(View view) {
-            String previewFilename = modelDirectory + "/test.g3db";
-            File previewModel = new File(previewFilename);
+            File previewModel = new File(modelDirectory, models.get(position).getName() + ".g3db");
 
             if (previewModel.exists()) {
                 Log.d("FILES", "Opened: " + previewModel.getAbsolutePath());
