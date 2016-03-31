@@ -47,7 +47,7 @@ public class ModelViewer extends ApplicationAdapter {
         modelBatch = new ModelBatch();
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(10f, 10f, 10f);
+        cam.position.set(0f, 55f, 5f);
         cam.lookAt(0,0,0);
         cam.near = 1f;
         cam.far = 300f;
