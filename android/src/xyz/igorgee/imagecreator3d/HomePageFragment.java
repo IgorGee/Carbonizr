@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
+import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
@@ -96,7 +98,11 @@ public class HomePageFragment extends ListFragment {
                 for (final File file : directory.listFiles())
                     if (file.getName().endsWith(".stl")) {
                         String fileName = file.getName().substring(0, file.getName().length() - 4);
-                        models.add(new Model(fileName, directory));
+                        models.add(new Model(fileName, directory,
+                                ImageHelper.decodeSampledBitmapFromResource(
+                                        new File(directory, fileName + ".jpg"))
+                                )
+                        );
                         textView.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                     }
@@ -143,6 +149,7 @@ public class HomePageFragment extends ListFragment {
         File file;
         String filename;
         File modelDirectory;
+        Bitmap bitmap;
         Context context;
         ShapeJS shapeJS = new ShapeJS();
         boolean error = false;
@@ -160,12 +167,14 @@ public class HomePageFragment extends ListFragment {
                 modelDirectoryName = modelDirectoryName.replace(c.toString(), "");
             modelDirectory = new File(modelsDirectory, modelDirectoryName);
             Log.d("FILENAMEDATE", modelDirectory.getName());
+            bitmap = ImageHelper.decodeSampledBitmapFromResource(file.getAbsoluteFile());
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             InputStream inputStream = null;
             FileOutputStream outputStream = null;
+            FileOutputStream bitmapOutputStream = null;
             File zipFile = new File(filesDirectory, filename + ".zip");
 
             try {
@@ -184,6 +193,10 @@ public class HomePageFragment extends ListFragment {
                             filename + file.getName().substring(file.getName().indexOf('.'))));
                 }
 
+                bitmapOutputStream = new FileOutputStream(
+                        new File(modelDirectory, filename + ".jpg"));
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapOutputStream);
+
             } catch (IOException e) {
                 error = true;
                 e.printStackTrace();
@@ -195,6 +208,8 @@ public class HomePageFragment extends ListFragment {
                         inputStream.close();
                     if (outputStream != null)
                         outputStream.close();
+                    if (bitmapOutputStream != null)
+                        bitmapOutputStream.close();
                 } catch (IOException e ) {
                     e.printStackTrace();
                 }
@@ -210,7 +225,7 @@ public class HomePageFragment extends ListFragment {
             if (error) {
                 makeAlertDialog(context, "Sorry, something went wrong. Try again in a few minutes.");
             } else {
-                Model model = new Model(filename, modelDirectory);
+                Model model = new Model(filename, modelDirectory, bitmap);
                 models.add(model);
                 adapter.notifyDataSetChanged();
             }
