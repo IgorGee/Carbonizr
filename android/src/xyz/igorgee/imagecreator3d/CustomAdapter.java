@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,14 +34,39 @@ import xyz.igorgee.utilities.UIUtilities;
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 
 public class CustomAdapter extends ArrayAdapter {
+    //TODO Add Disk Caching as well.
+
+    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+    final int cacheSize = maxMemory / 8;
+
     private final Context context;
     private final ArrayList<Model> models;
+    private LruCache<String, Bitmap> mMemoryCache;
 
     public CustomAdapter(Context context, int resource, int textViewResourceId,
                          ArrayList<Model> models) {
         super(context, resource, textViewResourceId, models);
         this.context = context;
         this.models = models;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
     }
 
     @Override
@@ -159,8 +184,9 @@ public class CustomAdapter extends ArrayAdapter {
         // Decode image in background.
         @Override
         protected Bitmap doInBackground(File... params) {
-            file = params[0];
-            return ImageHelper.decodeSampledBitmapFromResource(file);
+            final Bitmap bitmap = ImageHelper.decodeSampledBitmapFromResource(params[0]);
+            addBitmapToMemoryCache(String.valueOf(params[0]), bitmap);
+            return bitmap;
         }
 
         // Once complete, see if ImageView is still around and set bitmap.
@@ -195,12 +221,14 @@ public class CustomAdapter extends ArrayAdapter {
     }
 
     public void loadBitmap(File file, ImageView imageView) {
-        Bitmap bplaceholder = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
-        if (cancelPotentialWork(file, imageView)) {
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-            final AsyncDrawable asyncDrawable =
-                    new AsyncDrawable(context.getResources(), null, task);
-            imageView.setImageDrawable(asyncDrawable);
+        final String imageKey = file.getAbsolutePath();
+
+        final Bitmap bitmap = getBitmapFromMemCache(imageKey);
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        } else {
+            imageView.setImageResource(R.drawable.ic_launcher);
+            BitmapWorkerTask task = new BitmapWorkerTask(imageView);
             task.execute(file);
         }
     }
