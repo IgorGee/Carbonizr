@@ -100,13 +100,14 @@ public class HomePageFragment extends ListFragment {
                         textView.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                     }
+
             }
         }
     }
 
     @OnClick(R.id.selectImageButton)
     public void selectImage(View view) {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
     }
@@ -115,22 +116,24 @@ public class HomePageFragment extends ListFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SELECT_PHOTO && resultCode == Activity.RESULT_OK && data != null) {
-            Uri pickedImage = data.getData();
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            if (requestCode == SELECT_PHOTO) {
+                Uri pickedImage = data.getData();
 
-            String[] filePath = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getActivity().getContentResolver().query(pickedImage, filePath,
-                    null, null, null);
+                String[] filePath = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(pickedImage, filePath,
+                        null, null, null);
 
-            if (cursor != null) {
-                cursor.moveToFirst();
-                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
 
-                new GenerateObject(new File(imagePath), getActivity()).execute();
+                    new GenerateObject(new File(imagePath), getActivity()).execute();
 
-                cursor.close();
+                    cursor.close();
 
-                textView.setVisibility(View.GONE);
+                    textView.setVisibility(View.GONE);
+                }
             }
         }
     }
