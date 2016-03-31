@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,8 +96,8 @@ public class CustomAdapter extends ArrayAdapter {
     class ViewHolder {
         @Bind(R.id.image_name) TextView textView;
         @Bind(R.id.image) ImageView imageView;
-        @Bind(R.id.button_buy) Button buy;
-        @Bind(R.id.button_3d_view) Button view3d;
+        @Bind(R.id.button_buy) ImageButton buy;
+        @Bind(R.id.button_3d_view) ImageButton view3d;
 
         int position;
         File modelDirectory;

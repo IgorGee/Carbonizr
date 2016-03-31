@@ -3,20 +3,23 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight">
 
-    <Button
+    <ImageButton
         android:id="@+id/button_buy"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:text="@string/button_purchase"
-        android:textAllCaps="false"/>
+        android:src="@drawable/cart_plus"
+        android:background="@android:color/transparent"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_3d_view"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/button_buy"
-        android:text="@string/button_3d_view"/>
+        android:src="@drawable/cube_outline"
+        android:background="@android:color/transparent"/>
 
     <ImageView
         android:id="@+id/image"
