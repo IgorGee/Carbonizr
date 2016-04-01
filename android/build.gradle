@@ -40,6 +40,7 @@ dependencies {
     compile 'com.github.scribejava:scribejava-apis:2.2.2'
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'junit:junit:4.12'
 
