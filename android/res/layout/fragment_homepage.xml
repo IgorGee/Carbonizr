@@ -13,6 +13,12 @@
         android:layout_centerInParent="true"
         android:textSize="30sp"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/selectImageButton"
         android:layout_width="wrap_content"
@@ -25,11 +31,5 @@
         android:layout_marginEnd="@dimen/fab_margin_bottom"
         android:src="@drawable/ic_image_white_48dp"
         app:backgroundTint="@color/colorPrimary"/>
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
 
 </RelativeLayout>

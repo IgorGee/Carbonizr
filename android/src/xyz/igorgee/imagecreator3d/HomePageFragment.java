@@ -1,7 +1,7 @@
 package xyz.igorgee.imagecreator3d;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,7 +42,7 @@ import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 
-public class HomePageFragment extends ListFragment {
+public class HomePageFragment extends Fragment {
 
     private final static int SELECT_PHOTO = 46243;
     private final static String MODELS_DIRECTORY_NAME = "models";
@@ -49,10 +51,12 @@ public class HomePageFragment extends ListFragment {
     public static File modelsDirectory;
 
     @Bind(R.id.empty_home_page_text) TextView textView;
+    @Bind(R.id.list) RecyclerView list;
 
     public static Client client;
     ArrayList<Model> models;
-    CustomAdapter adapter;
+    RecyclerView.Adapter adapter;
+    RecyclerView.LayoutManager linearLayoutManager;
 
     @Nullable
     @Override
@@ -64,6 +68,14 @@ public class HomePageFragment extends ListFragment {
 
         filesDirectory = getActivity().getFilesDir();
         modelsDirectory = new File(filesDirectory, MODELS_DIRECTORY_NAME);
+
+        list.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        list.setLayoutManager(linearLayoutManager);
+
+        models = new ArrayList<>();
+        adapter = new CustomAdapter(getActivity(), models);
+        list.setAdapter(adapter);
 
         initializeClient();
 
@@ -84,10 +96,6 @@ public class HomePageFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        models = new ArrayList<>();
-        adapter = new CustomAdapter(getActivity(), R.layout.row, R.id.image_name, models);
-        setListAdapter(adapter);
 
         checkExistingFiles();
     }

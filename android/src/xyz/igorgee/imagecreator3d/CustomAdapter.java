@@ -7,12 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +33,7 @@ import xyz.igorgee.utilities.UIUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 
-public class CustomAdapter extends ArrayAdapter {
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     //TODO Add Disk Caching as well.
 
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -43,9 +43,7 @@ public class CustomAdapter extends ArrayAdapter {
     private final ArrayList<Model> models;
     private LruCache<String, Bitmap> mMemoryCache;
 
-    public CustomAdapter(Context context, int resource, int textViewResourceId,
-                         ArrayList<Model> models) {
-        super(context, resource, textViewResourceId, models);
+    public CustomAdapter(Context context, ArrayList<Model> models) {
         this.context = context;
         this.models = models;
 
@@ -59,6 +57,27 @@ public class CustomAdapter extends ArrayAdapter {
         };
     }
 
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        ViewHolder holder  = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.position = position;
+        holder.textView.setText(models.get(position).getName());
+        holder.modelDirectory = models.get(position).getLocation();
+        File imageLocation = new File(models.get(position).getLocation(), models.get(position).getName() + ".jpg");
+        loadBitmap(imageLocation, holder.imageView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return models.size();
+    }
+
     public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemCache(key) == null) {
             mMemoryCache.put(key, bitmap);
@@ -69,31 +88,7 @@ public class CustomAdapter extends ArrayAdapter {
         return mMemoryCache.get(key);
     }
 
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-
-        ViewHolder holder;
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (view == null) {
-            view = inflater.inflate(R.layout.row, parent, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-
-        holder.position = position;
-        holder.textView.setText(models.get(position).getName());
-        holder.modelDirectory = models.get(position).getLocation();
-        File imageLocation = new File(models.get(position).getLocation(), models.get(position).getName() + ".jpg");
-        loadBitmap(imageLocation, holder.imageView);
-
-        return view;
-    }
-
-    class ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.image_name) TextView textView;
         @Bind(R.id.image) ImageView imageView;
         @Bind(R.id.button_buy) ImageButton buy;
@@ -103,6 +98,7 @@ public class CustomAdapter extends ArrayAdapter {
         File modelDirectory;
 
         public ViewHolder(View view) {
+            super(view);
             ButterKnife.bind(this, view);
         }
 
