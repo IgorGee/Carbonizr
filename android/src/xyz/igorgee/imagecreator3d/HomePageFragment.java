@@ -1,9 +1,11 @@
 package xyz.igorgee.imagecreator3d;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -273,7 +275,22 @@ public class HomePageFragment extends Fragment {
                 }
                 break;
             case R.id.clear_list:
-                deleteAllModels();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Clear List")
+                        .setMessage("Are you sure you want to delete all these images?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteAllModels();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
                 break;
         }
 
