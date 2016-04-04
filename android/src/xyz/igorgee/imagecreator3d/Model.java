@@ -9,6 +9,7 @@ public class Model {
     File location; // Folder that contains the g3db and stl files.
     Integer modelID;
     Bitmap bitmap;
+    Boolean isUploaded;
 
     public Model(String name, File location, Bitmap bitmap) {
         this.name = name;
@@ -46,5 +47,13 @@ public class Model {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public Boolean isUploaded() {
+        return isUploaded;
+    }
+
+    public void setUploaded(Boolean uploaded) {
+        this.isUploaded = uploaded;
     }
 }
