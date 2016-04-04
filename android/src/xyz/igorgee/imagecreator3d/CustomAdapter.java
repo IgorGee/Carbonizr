@@ -2,6 +2,7 @@ package xyz.igorgee.imagecreator3d;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.scribejava.core.model.Response;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -75,14 +77,23 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         @OnClick(R.id.button_buy)
         public void buyModel(View view) {
-            File uploadModel = models.get(position).getStlLocation();
-            new UploadModelAsyncTask(uploadModel, uploadModel.getName(), position).execute();
-            UIUtilities.makeSnackbar(view, R.string.add_to_cart_text);
+            Model model = models.get(position);
+
+            if (model.modelID == null) {
+                model.setModelID(0);
+                new UploadModelAsyncTask(model).execute();
+                UIUtilities.makeSnackbar(view, "Processing model...");
+                buy.setBackgroundColor(Color.YELLOW);
+            } else {
+                UIUtilities.makeSnackbar(view, "Still processing, please be patient.");
+            }
+
         }
 
         @OnClick(R.id.button_3d_view)
         public void viewIn3D(View view) {
-            File previewModel = models.get(position).getG3dbLocation();
+            Model model = models.get(position);
+            File previewModel = model.getG3dbLocation();
 
             if (previewModel.exists()) {
                 Log.d("FILES", "Opened: " + previewModel.getAbsolutePath());
@@ -99,34 +110,31 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
             File uploadModel;
             String baseFileName;
-            int position;
+            Model model;
             JSONObject json;
+            Response response;
             int modelID;
 
-            UploadModelAsyncTask(File uploadModel, String baseFileName, int position) {
-                this.uploadModel = uploadModel;
-                this.baseFileName = baseFileName;
-                this.position = position;
+            UploadModelAsyncTask(Model model) {
+                this.model = model;
+                this.uploadModel = model.getStlLocation();
+                this.baseFileName = model.getName();
             }
 
             @Override
             protected Void doInBackground(Void... params) {
+                
+                response = HomePageFragment.client.uploadModel(uploadModel, baseFileName + ".stl");
 
-                if (models.get(position).getModelID() == null) {
-                    String response = HomePageFragment.client.uploadModel(uploadModel, baseFileName);
-
+                if (response.getCode() == 200) {
                     try {
-                        json = new JSONObject(response);
+                        json = new JSONObject(response.getBody());
                         modelID = json.getInt("modelId");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    modelID = models.get(position).modelID;
                 }
-
-                HomePageFragment.client.addToCart(modelID);
 
                 return null;
             }
@@ -134,7 +142,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                models.get(position).setModelID(modelID);
+                if (response.getCode() != 200) {
+                    makeAlertDialog(context, "Sorry, there was an error uploading your model." +
+                            "Please check that your internet connection is stable.");
+                    model.setModelID(null);
+                } else {
+                    model.setModelID(modelID);
+                }
             }
         }
     }
