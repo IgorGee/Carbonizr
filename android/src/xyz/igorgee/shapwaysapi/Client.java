@@ -60,6 +60,12 @@ public class Client {
         return responseTo(request);
     }
 
+    public Response checkIfProcessing(Integer modelId) {
+        request = new OAuthRequest(Verb.GET,
+                String.format(Discovery.MODEL.toString(), modelId.toString()), service);
+        return responseTo(request);
+    }
+
     public Response addToCart(int modelId) {
         request = new OAuthRequest(Verb.POST, Discovery.CART.toString(), service);
         JSONObject json = CreateJson.addToCart(modelId);

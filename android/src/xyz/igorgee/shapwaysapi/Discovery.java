@@ -5,6 +5,7 @@ public enum Discovery {
     API("/api"),
     CART("/cart/v1"),
     MATERIALS("/materials/v1"),
+    MODEL("/models/%s/v1"),
     MODELS("/models/v1"),
     PRINTERS("/printers/v1"),
     PRICE("/price/v1"),

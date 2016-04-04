@@ -29,6 +29,7 @@ import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 import xyz.igorgee.utilities.UIUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
+import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
@@ -85,7 +86,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 UIUtilities.makeSnackbar(view, "Processing model...");
                 buy.setBackgroundColor(Color.YELLOW);
             } else {
-                UIUtilities.makeSnackbar(view, "Still processing, please be patient.");
+                new CheckIfProcessingAsyncTask(model).execute();
             }
 
         }
@@ -148,6 +149,48 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                     model.setModelID(null);
                 } else {
                     model.setModelID(modelID);
+                }
+            }
+        }
+
+        class CheckIfProcessingAsyncTask extends AsyncTask<Void, Void, Void> {
+
+            Model model;
+            Response response;
+            JSONObject json;
+
+            CheckIfProcessingAsyncTask(Model model) {
+                this.model = model;
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                response = HomePageFragment.client.checkIfProcessing(model.getModelID());
+                try {
+                    json = new JSONObject(response.getBody());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                String result = null;
+                try {
+                    result = json.getString("printable");
+                    Log.d("PRINTABILITY", result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (result != null) {
+                    if (result.equals("processing"))
+                        makeSnackbar(textView, "Still processing. Please be patient.");
+                    else {
+                        //TODO Handle other possible responses.
+                        makeSnackbar(textView, model.getName() + " has been successfully uploaded.");
+                        buy.setBackgroundResource(R.drawable.cart_plus);
+                    }
                 }
             }
         }
