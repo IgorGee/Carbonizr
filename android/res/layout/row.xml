@@ -9,7 +9,7 @@
         android:layout_height="48dp"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/cart_plus"
+        android:src="@drawable/cloud_upload"
         android:background="@android:color/transparent"/>
 
     <ImageButton
