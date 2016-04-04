@@ -1,20 +1,21 @@
 package xyz.igorgee.imagecreator3d;
 
-import android.graphics.Bitmap;
-
 import java.io.File;
 
 public class Model {
     String name;
     File location; // Folder that contains the g3db and stl files.
+    File imageLocation;
+    File stlLocation;
+    File g3dbLocation;
     Integer modelID;
-    Bitmap bitmap;
-    Boolean isUploaded;
 
-    public Model(String name, File location, Bitmap bitmap) {
+    public Model(String name, File location) {
         this.name = name;
         this.location = location;
-        this.bitmap = bitmap;
+        this.imageLocation = new File(location, name + ".jpg");
+        this.stlLocation = new File(location, name + ".stl");
+        this.g3dbLocation = new File(location, name + ".g3db");
     }
 
     public String getName() {
@@ -33,27 +34,23 @@ public class Model {
         this.location = location;
     }
 
+    public File getImageLocation() {
+        return imageLocation;
+    }
+
+    public File getStlLocation() {
+        return stlLocation;
+    }
+
+    public File getG3dbLocation() {
+        return g3dbLocation;
+    }
+
     public Integer getModelID() {
         return modelID;
     }
 
     public void setModelID(Integer modelID) {
         this.modelID = modelID;
-    }
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    public Boolean isUploaded() {
-        return isUploaded;
-    }
-
-    public void setUploaded(Boolean uploaded) {
-        this.isUploaded = uploaded;
     }
 }

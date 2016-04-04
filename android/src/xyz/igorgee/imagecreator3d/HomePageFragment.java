@@ -109,11 +109,7 @@ public class HomePageFragment extends Fragment {
                 for (final File file : directory.listFiles())
                     if (file.getName().endsWith(".stl")) {
                         String fileName = file.getName().substring(0, file.getName().length() - 4);
-                        models.add(new Model(fileName, directory,
-                                ImageHelper.decodeSampledBitmapFromResource(
-                                        new File(directory, fileName + ".jpg"))
-                                )
-                        );
+                        models.add(new Model(fileName, directory));
                         textView.setVisibility(View.GONE);
                         adapter.notifyDataSetChanged();
                     }
@@ -236,7 +232,7 @@ public class HomePageFragment extends Fragment {
             if (error) {
                 makeAlertDialog(context, "Sorry, something went wrong. Try again in a few minutes.");
             } else {
-                Model model = new Model(filename, modelDirectory, bitmap);
+                Model model = new Model(filename, modelDirectory);
                 models.add(model);
                 adapter.notifyDataSetChanged();
             }

@@ -50,7 +50,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         holder.position = position;
         holder.textView.setText(models.get(position).getName());
         holder.modelDirectory = models.get(position).getLocation();
-        File imageLocation = new File(models.get(position).getLocation(), models.get(position).getName() + ".jpg");
+        File imageLocation = models.get(position).getImageLocation();
         Picasso.with(context).load(imageLocation).into(holder.imageView);
     }
 
@@ -75,14 +75,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         @OnClick(R.id.button_buy)
         public void buyModel(View view) {
-            File uploadModel = new File(modelDirectory, models.get(position).getName() + ".stl");
+            File uploadModel = models.get(position).getStlLocation();
             new UploadModelAsyncTask(uploadModel, uploadModel.getName(), position).execute();
             UIUtilities.makeSnackbar(view, R.string.add_to_cart_text);
         }
 
         @OnClick(R.id.button_3d_view)
         public void viewIn3D(View view) {
-            File previewModel = new File(modelDirectory, models.get(position).getName() + ".g3db");
+            File previewModel = models.get(position).getG3dbLocation();
 
             if (previewModel.exists()) {
                 Log.d("FILES", "Opened: " + previewModel.getAbsolutePath());
