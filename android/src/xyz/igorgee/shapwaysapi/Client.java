@@ -53,21 +53,21 @@ public class Client {
         accessToken = service.getAccessToken(requestToken, verifier);
     }
 
-    public String uploadModel(File file, String filename) {
+    public Response uploadModel(File file, String filename) {
         request = new OAuthRequest(Verb.POST, Discovery.MODELS.toString(), service);
         JSONObject json = CreateJson.uploadFile(file, filename);
         request.addPayload(json.toString());
         return responseTo(request);
     }
 
-    public String addToCart(int modelId) {
+    public Response addToCart(int modelId) {
         request = new OAuthRequest(Verb.POST, Discovery.CART.toString(), service);
         JSONObject json = CreateJson.addToCart(modelId);
         request.addPayload(json.toString());
         return responseTo(request);
     }
 
-    public String responseTo(OAuthRequest request) {
+    public Response responseTo(OAuthRequest request) {
         service.signRequest(accessToken, request);
         Response response = request.send();
 
@@ -78,6 +78,6 @@ public class Client {
                 response.getHeaders(),
                 response.getBody()));
 
-        return response.getBody();
+        return response;
     }
 }
