@@ -20,5 +20,6 @@
     <string name="button_purchase">Buy</string>
     <string name="add_to_cart_text">Added to Cart!</string>
     <string name="clear_string">clear</string>
+    <string name="cart_string">Cart</string>
 
 </resources>

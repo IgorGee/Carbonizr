@@ -2,6 +2,7 @@ package xyz.igorgee.imagecreator3d;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -258,8 +259,22 @@ public class HomePageFragment extends Fragment {
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.cart:
+                String urlString="https://shapeways.com/cart";
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    this.startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    this.startActivity(intent);
+                }
+                break;
             case R.id.clear_list:
                 deleteAllModels();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
