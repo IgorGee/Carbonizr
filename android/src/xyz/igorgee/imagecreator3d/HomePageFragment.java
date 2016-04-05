@@ -230,7 +230,7 @@ public class HomePageFragment extends Fragment {
             super.onPostExecute(aVoid);
 
             if (error) {
-                makeAlertDialog(context, "Sorry, something went wrong. Try again in a few minutes.");
+                makeAlertDialog(context, "Error", "Sorry, something went wrong. Try again in a few minutes.");
             } else {
                 Model model = new Model(filename, modelDirectory);
                 models.add(model);

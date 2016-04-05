@@ -2,10 +2,7 @@ package xyz.igorgee.imagecreator3d;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.scribejava.core.model.Response;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,10 +19,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
-import xyz.igorgee.utilities.UIUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
-import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
@@ -80,13 +71,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public void buyModel(View view) {
             Model model = models.get(position);
 
-            if (model.modelID == null) {
+            if (model.getModelID() == null) {
                 model.setModelID(0);
-                new UploadModelAsyncTask(model).execute();
-                UIUtilities.makeSnackbar(view, "Processing model...");
-                buy.setBackgroundColor(Color.YELLOW);
+                model.uploadModel(buy);
             } else {
-                new CheckIfProcessingAsyncTask(model).execute();
+                model.updateStatus(buy);
             }
 
         }
@@ -97,101 +86,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             File previewModel = model.getG3dbLocation();
 
             if (previewModel.exists()) {
-                Log.d("FILES", "Opened: " + previewModel.getAbsolutePath());
                 Intent viewModel = new Intent(context, ObjectViewer.class);
                 viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
                 context.startActivity(viewModel);
             } else {
-                makeAlertDialog(context, "File not found.");
-                Log.e("FILES", "Tried to open: " + previewModel.getAbsolutePath());
-            }
-        }
-
-        class UploadModelAsyncTask extends AsyncTask<Void, Void, Void> {
-
-            File uploadModel;
-            String baseFileName;
-            Model model;
-            JSONObject json;
-            Response response;
-            int modelID;
-
-            UploadModelAsyncTask(Model model) {
-                this.model = model;
-                this.uploadModel = model.getStlLocation();
-                this.baseFileName = model.getName();
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                
-                response = HomePageFragment.client.uploadModel(uploadModel, baseFileName + ".stl");
-
-                if (response.getCode() == 200) {
-                    try {
-                        json = new JSONObject(response.getBody());
-                        modelID = json.getInt("modelId");
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (response.getCode() != 200) {
-                    makeAlertDialog(context, "Sorry, there was an error uploading your model." +
-                            "Please check that your internet connection is stable.");
-                    model.setModelID(null);
-                } else {
-                    model.setModelID(modelID);
-                }
-            }
-        }
-
-        class CheckIfProcessingAsyncTask extends AsyncTask<Void, Void, Void> {
-
-            Model model;
-            Response response;
-            JSONObject json;
-
-            CheckIfProcessingAsyncTask(Model model) {
-                this.model = model;
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                response = HomePageFragment.client.checkIfProcessing(model.getModelID());
-                try {
-                    json = new JSONObject(response.getBody());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                String result = null;
-                try {
-                    result = json.getString("printable");
-                    Log.d("PRINTABILITY", result);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (result != null) {
-                    if (result.equals("processing"))
-                        makeSnackbar(textView, "Still processing. Please be patient.");
-                    else {
-                        //TODO Handle other possible responses.
-                        makeSnackbar(textView, model.getName() + " has been successfully uploaded.");
-                        buy.setBackgroundResource(R.drawable.cart_plus);
-                    }
-                }
+                makeAlertDialog(context, "Error", "File not found.");
             }
         }
     }
