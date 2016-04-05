@@ -44,9 +44,9 @@ public class UIUtilities {
                 }).show();
     }
 
-    public static void makeAlertDialog(Context context, String message, int iconID) {
+    public static void makeAlertDialog(Context context, String title, String message, int iconID) {
         new AlertDialog.Builder(context)
-                .setTitle("Image Information")
+                .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
@@ -64,9 +64,9 @@ public class UIUtilities {
                 .show();
     }
 
-    public static void makeAlertDialog(Context context, String message) {
+    public static void makeAlertDialog(Context context, String title, String message) {
         new AlertDialog.Builder(context)
-                .setTitle("Image Information")
+                .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
@@ -83,11 +83,11 @@ public class UIUtilities {
                 .show();
     }
 
-    public static void makeAlertDialog(Context context, String message,
+    public static void makeAlertDialog(Context context, String title, String message,
                                        String positiveButton, String negativeButton,
                                        int iconID) {
         new AlertDialog.Builder(context)
-                .setTitle("Image Information")
+                .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                     @Override
