@@ -9,15 +9,23 @@ import android.view.View;
 public class UIUtilities {
     
     public static void makeSnackbar(View view, int stringID) {
-        makeSnackbar(view, stringID, null);
+        makeSnackbar(view, stringID, Snackbar.LENGTH_SHORT, null);
     }
 
     public static void makeSnackbar(View view, String content) {
-        makeSnackbar(view, content, null);
+        makeSnackbar(view, content, Snackbar.LENGTH_SHORT, null);
     }
 
-    public static void makeSnackbar(View view, int stringID, String confirm) {
-        Snackbar.make(view, stringID, Snackbar.LENGTH_SHORT)
+    public static void makeSnackbar(View view, int stringID, int duration) {
+        makeSnackbar(view, stringID, duration, null);
+    }
+
+    public static void makeSnackbar(View view, String content, int duration) {
+        makeSnackbar(view, content, duration, null);
+    }
+
+    public static void makeSnackbar(View view, int stringID, int duration, String confirm) {
+        Snackbar.make(view, stringID, duration)
                 .setAction(confirm != null ? confirm : "Ok", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -26,8 +34,8 @@ public class UIUtilities {
                 }).show();
     }
 
-    public static void makeSnackbar(View view, String content, String confirm) {
-        Snackbar.make(view, content, Snackbar.LENGTH_SHORT)
+    public static void makeSnackbar(View view, String content, int duration, String confirm) {
+        Snackbar.make(view, content, duration)
                 .setAction(confirm != null ? confirm : "Ok", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
