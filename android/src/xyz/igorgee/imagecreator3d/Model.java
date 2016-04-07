@@ -189,7 +189,7 @@ public class Model {
                 setModelID(null);
             } else {
                 setModelID(modelID);
-                buyButton.setBackgroundResource(R.drawable.ic_cart_plus);
+                buyButton.setBackgroundResource(R.drawable.ic_add_shopping_cart_black_24dp);
                 makeSnackbar(buyButton, "Processing started.\nPlease wait 10-20 minutes.",
                         Snackbar.LENGTH_INDEFINITE);
             }

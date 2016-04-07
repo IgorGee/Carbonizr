@@ -9,7 +9,7 @@
         android:orderInCategory="1"
         android:title="@string/cart_string"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/cart"/>
+        android:icon="@drawable/ic_cart"/>
 
     <item
         android:id="@+id/clear_list"

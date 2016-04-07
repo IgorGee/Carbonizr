@@ -7,19 +7,19 @@
         android:id="@+id/button_buy"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginRight="16dp"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/cloud_upload"
-        android:background="@android:color/transparent"/>
+        android:background="@drawable/ic_cloud_upload_black_24dp"/>
 
     <ImageButton
         android:id="@+id/button_3d_view"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginRight="16dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/button_buy"
-        android:src="@drawable/cube_outline"
-        android:background="@android:color/transparent"/>
+        android:background="@drawable/ic_3d_rotation_black_24dp"/>
 
     <ImageView
         android:id="@+id/image"
