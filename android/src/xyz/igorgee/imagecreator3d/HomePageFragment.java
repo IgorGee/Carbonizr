@@ -232,9 +232,15 @@ public class HomePageFragment extends Fragment {
             if (error) {
                 makeAlertDialog(context, "Error", "Sorry, something went wrong. Try again in a few minutes.");
             } else {
-                Model model = new Model(filename, modelDirectory);
-                models.add(model);
-                adapter.notifyDataSetChanged();
+                final Model model = new Model(filename, modelDirectory);
+                list.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        models.add(0, model);
+                        adapter.notifyDataSetChanged();
+                        list.smoothScrollToPosition(0);
+                    }
+                });
             }
         }
     }
