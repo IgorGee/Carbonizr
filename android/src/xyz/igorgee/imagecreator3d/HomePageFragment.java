@@ -139,12 +139,14 @@ public class HomePageFragment extends Fragment {
         Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+        fam.collapse();
     }
 
     @OnClick(R.id.camera_fab)
     public void takePicture(View view) {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, TAKE_PICTURE);
+        fam.collapse();
     }
 
     @Override
