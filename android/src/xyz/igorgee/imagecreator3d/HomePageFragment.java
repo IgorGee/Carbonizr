@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.github.scribejava.core.model.Token;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,6 +40,7 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import xyz.igorgee.floatingactionbutton.FloatingActionsMenu;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.ImageHelper;
@@ -48,12 +51,14 @@ import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 public class HomePageFragment extends Fragment {
 
     private final static int SELECT_PHOTO = 46243;
+    private final static int TAKE_PICTURE = 7428873;
     private final static String MODELS_DIRECTORY_NAME = "models";
 
     public static File filesDirectory;
     public static File modelsDirectory;
 
     @Bind(R.id.empty_home_page_text) TextView textView;
+    @Bind(R.id.image_options_fam) FloatingActionsMenu fam;
     @Bind(R.id.list) RecyclerView list;
 
     public static Client client;
@@ -79,6 +84,17 @@ public class HomePageFragment extends Fragment {
         models = new ArrayList<>();
         adapter = new CustomAdapter(getActivity(), models);
         list.setAdapter(adapter);
+
+        list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    fam.hide();
+                } else {
+                    fam.show();
+                }
+            }
+        });
 
         initializeClient();
 
@@ -118,11 +134,17 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.selectImageButton)
+    @OnClick(R.id.gallery_fab)
     public void selectImage(View view) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+    }
+
+    @OnClick(R.id.camera_fab)
+    public void takePicture(View view) {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, TAKE_PICTURE);
     }
 
     @Override
@@ -146,6 +168,32 @@ public class HomePageFragment extends Fragment {
                     cursor.close();
 
                     textView.setVisibility(View.GONE);
+                }
+            } else if (requestCode == TAKE_PICTURE) {
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                if (thumbnail != null) {
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                }
+
+                File file = new File(Environment.getExternalStorageDirectory()+File.separator + "image.jpg");
+                FileOutputStream fileOutputStream = null;
+                try {
+                    file.createNewFile();
+                    fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream.write(bytes.toByteArray());
+                    new GenerateObject(file, getActivity()).execute();
+                    textView.setVisibility(View.GONE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (fileOutputStream != null)
+                            fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
