@@ -37,24 +37,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         initializeInstances();
 
-        chooseAppropriateFragment();
+        chooseAppropriateFragment(savedInstanceState);
     }
 
-    private void chooseAppropriateFragment() {
+    private void chooseAppropriateFragment(Bundle savedInstanceState) {
         SharedPreferences preferences = getSharedPreferences(MY_PREF_NAME, MODE_PRIVATE);
         String accessTokenValue = preferences.getString(ACCESS_TOKEN_VALUE, null);
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-        if (accessTokenValue == null) {
-            fragmentTransaction.add(R.id.fragmentPlaceholder, new LogInFragment());
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if (savedInstanceState == null) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            if (accessTokenValue == null) {
+                fragmentTransaction.add(R.id.fragmentPlaceholder, new LogInFragment(), "LogIn");
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            } else {
+                fragmentTransaction.add(R.id.fragmentPlaceholder, new HomePageFragment(), "Home");
+            }
+            fragmentTransaction.commit();
         } else {
-            fragmentTransaction.add(R.id.fragmentPlaceholder, new HomePageFragment());
+            getFragmentManager().findFragmentByTag("Home");
         }
-
-        fragmentTransaction.commit();
     }
 
     private void initializeInstances() {
