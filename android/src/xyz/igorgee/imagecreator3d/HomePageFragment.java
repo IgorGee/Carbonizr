@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.scribejava.core.model.Token;
+import com.soundcloud.android.crop.Crop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -141,9 +142,7 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.gallery_fab)
     public void selectImage(View view) {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+        Crop.pickImage(getActivity(), this);
         fam.collapse();
     }
 
@@ -159,7 +158,7 @@ public class HomePageFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == SELECT_PHOTO) {
+            if (requestCode == Crop.REQUEST_PICK) {
                 Uri pickedImage = data.getData();
 
                 String[] filePath = {MediaStore.Images.Media.DATA};
