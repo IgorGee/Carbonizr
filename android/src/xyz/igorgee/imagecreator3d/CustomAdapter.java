@@ -24,12 +24,23 @@ import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
+    private static CustomAdapter adapter;
     private final Context context;
-    private final ArrayList<Model> models;
+    private static ArrayList<Model> models;
 
-    public CustomAdapter(Context context, ArrayList<Model> models) {
+    public static CustomAdapter getInstance(Context context, ArrayList<Model> models) {
+        if (adapter != null) {
+            CustomAdapter.models = models;
+        } else {
+            adapter = new CustomAdapter(context, models);
+        }
+
+        return adapter;
+    }
+
+    private CustomAdapter(Context context, ArrayList<Model> models) {
         this.context = context;
-        this.models = models;
+        CustomAdapter.models = models;
     }
 
     @Override
@@ -51,6 +62,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return models.size();
+    }
+
+    public void updateList(ArrayList<Model> models) {
+        CustomAdapter.models = models;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

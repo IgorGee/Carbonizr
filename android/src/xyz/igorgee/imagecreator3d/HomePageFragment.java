@@ -63,7 +63,7 @@ public class HomePageFragment extends Fragment {
 
     public static Client client;
     ArrayList<Model> models;
-    RecyclerView.Adapter adapter;
+    CustomAdapter adapter;
     RecyclerView.LayoutManager linearLayoutManager;
 
     @Nullable
@@ -74,15 +74,16 @@ public class HomePageFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        filesDirectory = getActivity().getFilesDir();
+        filesDirectory = Environment.getExternalStorageDirectory();
         modelsDirectory = new File(filesDirectory, MODELS_DIRECTORY_NAME);
+        modelsDirectory.mkdirs();
 
         list.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(linearLayoutManager);
 
         models = new ArrayList<>();
-        adapter = new CustomAdapter(getActivity(), models);
+        adapter = CustomAdapter.getInstance(getActivity(), models);
         list.setAdapter(adapter);
 
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -99,6 +100,10 @@ public class HomePageFragment extends Fragment {
         initializeClient();
 
         return view;
+    }
+
+    public void refresh() {
+        adapter.updateList(models);
     }
 
     private void initializeClient() {
@@ -127,7 +132,7 @@ public class HomePageFragment extends Fragment {
                         String fileName = file.getName().substring(0, file.getName().length() - 4);
                         models.add(new Model(fileName, directory));
                         textView.setVisibility(View.GONE);
-                        adapter.notifyDataSetChanged();
+                        refresh();
                     }
 
             }
@@ -223,6 +228,7 @@ public class HomePageFragment extends Fragment {
             for (Character c : JavaUtilities.ILLEGAL_CHARACTERS)
                 modelDirectoryName = modelDirectoryName.replace(c.toString(), "");
             modelDirectory = new File(modelsDirectory, modelDirectoryName);
+            modelDirectory.mkdirs();
             Log.d("FILENAMEDATE", modelDirectory.getName());
             bitmap = ImageHelper.decodeSampledBitmapFromResource(file.getAbsoluteFile());
         }
@@ -232,11 +238,11 @@ public class HomePageFragment extends Fragment {
             InputStream inputStream = null;
             FileOutputStream outputStream = null;
             FileOutputStream bitmapOutputStream = null;
-            File zipFile = new File(filesDirectory, filename + ".zip");
+            File zipFile = new File(modelDirectory, filename + ".zip");
 
             try {
                 inputStream = shapeJS.uploadImage(file);
-                outputStream = context.openFileOutput(zipFile.getName(), Context.MODE_PRIVATE);
+                outputStream = new FileOutputStream(zipFile);
 
                 int b;
                 while ((b = inputStream.read()) != -1) {
@@ -283,14 +289,8 @@ public class HomePageFragment extends Fragment {
                 makeAlertDialog(context, "Error", "Sorry, something went wrong. Try again in a few minutes.");
             } else {
                 final Model model = new Model(filename, modelDirectory);
-                list.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        models.add(0, model);
-                        adapter.notifyDataSetChanged();
-                        list.smoothScrollToPosition(0);
-                    }
-                });
+                models.add(0, model);
+                refresh();
             }
         }
     }
@@ -298,7 +298,7 @@ public class HomePageFragment extends Fragment {
     private void deleteAllModels() {
         JavaUtilities.deleteDirectory(modelsDirectory);
         models.clear();
-        adapter.notifyDataSetChanged();
+        refresh();
         textView.setVisibility(View.VISIBLE);
     }
 
