@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
+import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class HomePageFragment extends Fragment {
 
@@ -145,8 +147,12 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.camera_fab)
     public void takePicture(View view) {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, TAKE_PICTURE);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, TAKE_PICTURE);
+        } else {
+            makeSnackbar(view, "Sorry you need to have a camera app.");
+        }
         fam.collapse();
     }
 
