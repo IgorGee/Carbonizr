@@ -8,13 +8,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +28,6 @@ import android.widget.TextView;
 import com.github.scribejava.core.model.Token;
 import com.soundcloud.android.crop.Crop;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -158,49 +155,15 @@ public class HomePageFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == Crop.REQUEST_PICK) {
+            if (requestCode == Crop.REQUEST_PICK || requestCode == TAKE_PICTURE) {
                 Uri pickedImage = data.getData();
-
-                String[] filePath = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getActivity().getContentResolver().query(pickedImage, filePath,
-                        null, null, null);
-
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-
-                    new GenerateObject(new File(imagePath), getActivity()).execute();
-
-                    cursor.close();
-
-                    textView.setVisibility(View.GONE);
-                }
-            } else if (requestCode == TAKE_PICTURE) {
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                if (thumbnail != null) {
-                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                }
-
-                File file = new File(Environment.getExternalStorageDirectory()+File.separator + "image.jpg");
-                FileOutputStream fileOutputStream = null;
-                try {
-                    file.createNewFile();
-                    fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write(bytes.toByteArray());
-                    new GenerateObject(file, getActivity()).execute();
-                    textView.setVisibility(View.GONE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (fileOutputStream != null)
-                            fileOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+                Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
+            } else if (requestCode == Crop.REQUEST_CROP) {
+                Uri croppedImage = Crop.getOutput(data);
+                File imagePath = new File(croppedImage.getPath());
+                new GenerateObject(imagePath, getActivity()).execute();
+                textView.setVisibility(View.GONE);
             }
         }
     }
