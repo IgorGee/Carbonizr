@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,7 +44,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent, false);
         ViewHolder holder  = new ViewHolder(view);
         return holder;
     }
@@ -72,8 +71,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.image_name) TextView textView;
         @Bind(R.id.image) ImageView imageView;
-        @Bind(R.id.button_buy) ImageButton buy;
-        @Bind(R.id.button_3d_view) ImageButton view3d;
+        @Bind(R.id.button_upload_and_buy) ImageView buy;
+        @Bind(R.id.button_3d_view) ImageView view3d;
 
         int position;
         File modelDirectory;
@@ -83,7 +82,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             ButterKnife.bind(this, view);
         }
 
-        @OnClick(R.id.button_buy)
+        @OnClick(R.id.button_upload_and_buy)
         public void buyModel(View view) {
             Model model = models.get(position);
 

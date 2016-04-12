@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +44,7 @@ import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
+import xyz.igorgee.utilities.SpacesItemDecoration;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
@@ -60,6 +61,7 @@ public class HomePageFragment extends Fragment {
     @Bind(R.id.empty_home_page_text) TextView textView;
     @Bind(R.id.image_options_fam) FloatingActionsMenu fam;
     @Bind(R.id.list) RecyclerView list;
+    SpacesItemDecoration decoration;
 
     public static Client client;
     ArrayList<Model> models;
@@ -79,8 +81,10 @@ public class HomePageFragment extends Fragment {
         modelsDirectory.mkdirs();
 
         list.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new GridLayoutManager(getActivity(), 2);
         list.setLayoutManager(linearLayoutManager);
+        decoration = new SpacesItemDecoration(16);
+        list.addItemDecoration(decoration);
 
         models = new ArrayList<>();
         adapter = CustomAdapter.getInstance(getActivity(), models);
