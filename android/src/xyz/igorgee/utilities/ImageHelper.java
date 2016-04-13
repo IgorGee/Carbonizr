@@ -38,7 +38,7 @@ public class ImageHelper {
         BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, 64, 64);
+        options.inSampleSize = calculateInSampleSize(options, 300, 300);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
