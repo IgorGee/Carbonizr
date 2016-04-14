@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -167,7 +168,9 @@ public class HomePageFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == Crop.REQUEST_PICK || requestCode == TAKE_PICTURE) {
                 Uri pickedImage = data.getData();
-                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+                String filename = getNameFromUri(getActivity(), pickedImage);
+
+                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), filename));
                 Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
             } else if (requestCode == Crop.REQUEST_CROP) {
                 Uri croppedImage = Crop.getOutput(data);
@@ -176,6 +179,25 @@ public class HomePageFragment extends Fragment {
                 textView.setVisibility(View.GONE);
             }
         }
+    }
+
+    public String getNameFromUri(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        String name;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            File file = new File(cursor.getString(column_index));
+            name = file.getName();
+            file.delete();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return name;
     }
 
     private class GenerateObject extends AsyncTask<Void, Void, Void> {
