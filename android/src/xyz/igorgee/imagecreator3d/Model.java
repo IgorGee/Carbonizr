@@ -57,6 +57,10 @@ public class Model {
         return new File(location, name + ".g3db");
     }
 
+    public File getPreviewImage() {
+        return new File(location, "preview.jpg");
+    }
+
     public Integer getModelID() {
         return modelID;
     }

@@ -56,6 +56,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         holder.modelDirectory = models.get(position).getLocation();
         File imageLocation = models.get(position).getImageLocation();
         Picasso.with(context).load(imageLocation).into(holder.imageView);
+        Picasso.with(context).load(models.get(position).getPreviewImage()).into(holder.previewImage);
     }
 
     @Override
@@ -71,6 +72,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.image_name) TextView textView;
         @Bind(R.id.image) ImageView imageView;
+        @Bind(R.id.preview_image) ImageView previewImage;
         @Bind(R.id.button_upload_and_buy) ImageView buy;
         @Bind(R.id.button_3d_view) ImageView view3d;
 

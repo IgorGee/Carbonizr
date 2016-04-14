@@ -81,7 +81,7 @@ public class HomePageFragment extends Fragment {
         modelsDirectory.mkdirs();
 
         list.setHasFixedSize(true);
-        linearLayoutManager = new GridLayoutManager(getActivity(), 2);
+        linearLayoutManager = new GridLayoutManager(getActivity(), 1);
         list.setLayoutManager(linearLayoutManager);
         decoration = new SpacesItemDecoration(16);
         list.addItemDecoration(decoration);
@@ -201,6 +201,7 @@ public class HomePageFragment extends Fragment {
                 modelDirectoryName = modelDirectoryName.replace(c.toString(), "");
             modelDirectory = new File(modelsDirectory, modelDirectoryName);
             modelDirectory.mkdirs();
+            Log.d("FILELOCATION", modelDirectory.getAbsolutePath());
             Log.d("FILENAMEDATE", modelDirectory.getName());
             bitmap = ImageHelper.decodeSampledBitmapFromResource(file.getAbsoluteFile());
         }
@@ -224,8 +225,12 @@ public class HomePageFragment extends Fragment {
                 JavaUtilities.unzip(zipFile, modelDirectory);
 
                 for (File file : modelDirectory.listFiles()) {
-                    file.renameTo(new File(modelDirectory,
-                            filename + file.getName().substring(file.getName().indexOf('.'))));
+                    if (file.getName().endsWith(".jpg")) {
+                        file.renameTo(new File(modelDirectory, "preview.jpg"));
+                    } else {
+                        file.renameTo(new File(modelDirectory,
+                                filename + file.getName().substring(file.getName().indexOf('.'))));
+                    }
                 }
 
                 bitmapOutputStream = new FileOutputStream(

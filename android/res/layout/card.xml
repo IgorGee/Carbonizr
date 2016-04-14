@@ -13,17 +13,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.percent.PercentRelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/image"
-                    app:layout_widthPercent="100%"
-                    app:layout_aspectRatio="100%"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/image_content_description"
-                    android:src="@drawable/ic_launcher"/>
-            </android.support.percent.PercentRelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.percent.PercentRelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/image"
+                        app:layout_widthPercent="50%"
+                        app:layout_aspectRatio="100%"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/image_content_description"
+                        android:src="@drawable/ic_launcher"/>
+                </android.support.percent.PercentRelativeLayout>
+
+                <android.support.percent.PercentRelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/preview_image"
+                        app:layout_widthPercent="100%"
+                        app:layout_aspectRatio="100%"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/image_content_description"
+                        android:src="@drawable/ic_launcher"/>
+                </android.support.percent.PercentRelativeLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/image_name"
