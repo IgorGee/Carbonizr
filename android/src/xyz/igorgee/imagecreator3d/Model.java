@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import xyz.igorgee.shapwaysapi.Materials;
+import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
@@ -80,6 +81,10 @@ public class Model {
 
     public void updateStatus(View buyButton) {
         new CheckIfProcessingAsyncTask(buyButton).execute();
+    }
+
+    public void delete() {
+        JavaUtilities.deleteDirectory(location);
     }
 
     class CheckIfProcessingAsyncTask extends AsyncTask<Void, Void, Void> {

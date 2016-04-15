@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
+import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
@@ -109,6 +110,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             } else {
                 makeAlertDialog(context, "Error", "File not found.");
             }
+        }
+
+        @OnClick (R.id.button_delete)
+        public void deleteModel(View view) {
+            //TODO Remove this from the cart as well
+            models.get(position).delete();
+            models.remove(position);
+            updateList(models);
+            makeSnackbar(view, "Deleted");
         }
     }
 }
