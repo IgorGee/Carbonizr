@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.github.scribejava.core.model.Response;
 
@@ -193,7 +194,7 @@ public class Model {
                 setModelID(null);
             } else {
                 setModelID(modelID);
-                buyButton.setBackgroundResource(R.drawable.ic_add_shopping_cart_black_24dp);
+                ((ImageView) buyButton).setImageResource(R.drawable.ic_add_shopping_cart_black_24dp);
                 makeSnackbar(buyButton, "Processing started.\nPlease wait 10-20 minutes.",
                         Snackbar.LENGTH_INDEFINITE);
             }

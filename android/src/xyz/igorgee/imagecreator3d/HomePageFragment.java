@@ -45,7 +45,6 @@ import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
-import xyz.igorgee.utilities.SpacesItemDecoration;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
@@ -62,7 +61,6 @@ public class HomePageFragment extends Fragment {
     @Bind(R.id.empty_home_page_text) TextView textView;
     @Bind(R.id.image_options_fam) FloatingActionsMenu fam;
     @Bind(R.id.list) RecyclerView list;
-    SpacesItemDecoration decoration;
 
     public static Client client;
     ArrayList<Model> models;
@@ -84,8 +82,6 @@ public class HomePageFragment extends Fragment {
         list.setHasFixedSize(true);
         linearLayoutManager = new GridLayoutManager(getActivity(), 1);
         list.setLayoutManager(linearLayoutManager);
-        decoration = new SpacesItemDecoration(16);
-        list.addItemDecoration(decoration);
 
         models = new ArrayList<>();
         adapter = CustomAdapter.getInstance(getActivity(), models);

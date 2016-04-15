@@ -2,7 +2,7 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -21,14 +21,15 @@
                 android:id="@+id/image_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_marginLeft="8dp"
                 android:text="Lorem Ipsum"
                 android:textSize="30sp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
                 <android.support.percent.PercentRelativeLayout
                     android:layout_width="wrap_content"
@@ -58,20 +59,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
 
                 <ImageView
-                    android:id="@+id/button_cancel"
+                    android:id="@+id/button_delete"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ic_delete_black_48dp"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/button_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_edit_black_48dp"
                     android:layout_weight="1"/>
 
                 <ImageView
                     android:id="@+id/button_social"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ic_share_black_48dp"
                     android:layout_weight="1"/>
 
@@ -85,7 +95,7 @@
                 <ImageView
                     android:id="@+id/button_upload_and_buy"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ic_file_upload_black_48dp"
                     android:layout_weight="1"/>
 
