@@ -25,10 +25,6 @@
         <activity android:name="xyz.igorgee.imagecreatorg3dx.ObjectViewer">
 
         </activity>
-        <activity android:name="xyz.igorgee.imagecreator3d.AuthorizationWebViewActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-
-        </activity>
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
     </application>
 

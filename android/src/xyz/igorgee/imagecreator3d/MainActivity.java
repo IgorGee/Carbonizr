@@ -3,7 +3,6 @@ package xyz.igorgee.imagecreator3d;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -41,18 +40,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void chooseAppropriateFragment(Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences(MY_PREF_NAME, MODE_PRIVATE);
-        String accessTokenValue = preferences.getString(ACCESS_TOKEN_VALUE, null);
-
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            if (accessTokenValue == null) {
-                fragmentTransaction.add(R.id.fragmentPlaceholder, new LogInFragment(), "LogIn");
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            } else {
-                fragmentTransaction.add(R.id.fragmentPlaceholder, new HomePageFragment(), "Home");
-            }
+            fragmentTransaction.add(R.id.fragmentPlaceholder, new HomePageFragment(), "Home");
             fragmentTransaction.commit();
         } else {
             getFragmentManager().findFragmentByTag("Home");

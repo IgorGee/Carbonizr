@@ -98,7 +98,7 @@ public class HomePageFragment extends Fragment {
             }
         });
 
-        initializeClient();
+//        initializeClient();
 
         return view;
     }
