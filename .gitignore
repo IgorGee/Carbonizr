@@ -30,14 +30,7 @@ proguard/
 
 # Android Studio specific
 *.iml
-/.idea/.name
-/.idea/gradle.xml
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/libraries
-/.idea/misc.xml
-/.idea/inspectionProfiles/
-/.idea/dictionaries/
+.idea/
 
 # Android Studio captures folder
 captures/
