@@ -75,7 +75,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         @Bind(R.id.image) ImageView imageView;
         @Bind(R.id.preview_image) ImageView previewImage;
         @Bind(R.id.button_upload_and_buy) ImageView buy;
-        @Bind(R.id.button_3d_view) ImageView view3d;
 
         int position;
         File modelDirectory;
@@ -98,7 +97,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         }
 
-        @OnClick(R.id.button_3d_view)
+        @OnClick({R.id.button_3d_view, R.id.preview_image})
         public void viewIn3D(View view) {
             Model model = models.get(position);
             File previewModel = model.getG3dbLocation();
