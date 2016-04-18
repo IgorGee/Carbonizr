@@ -54,6 +54,9 @@ public class HomePageFragment extends Fragment {
     private final static int SELECT_PHOTO = 46243;
     private final static int TAKE_PICTURE = 7428873;
     private final static String MODELS_DIRECTORY_NAME = "models";
+    public static final String MODEL_NAMES = "ModelNames";
+
+    public static SharedPreferences sharedPreferences;
 
     public static File filesDirectory;
     public static File modelsDirectory;
@@ -98,6 +101,8 @@ public class HomePageFragment extends Fragment {
             }
         });
 
+        sharedPreferences = getActivity().getSharedPreferences
+                (HomePageFragment.MODEL_NAMES, Context.MODE_PRIVATE);
 //        initializeClient();
 
         return view;

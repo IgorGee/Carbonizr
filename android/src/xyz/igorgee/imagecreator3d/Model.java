@@ -1,6 +1,7 @@
 package xyz.igorgee.imagecreator3d;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -13,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import xyz.igorgee.shapwaysapi.Materials;
@@ -24,6 +26,7 @@ import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class Model {
     String name;
+    String originalName;
     File location; // Folder that contains the g3db and stl files.
     Integer modelID;
     ModelStatus status;
@@ -31,16 +34,19 @@ public class Model {
 
     public Model(String name, File location) {
         this.name = name;
+        this.originalName = name;
         this.location = location;
         availableMaterials = new ArrayList<>();
     }
 
     public String getName() {
-        return name;
+        return HomePageFragment.sharedPreferences.getString(location.getName(), name);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws IOException {
+        SharedPreferences.Editor editor = HomePageFragment.sharedPreferences.edit();
+        editor.putString(location.getName(), name);
+        editor.apply();
     }
 
     public File getLocation() {
@@ -48,15 +54,15 @@ public class Model {
     }
 
     public File getImageLocation() {
-        return new File(location, name + ".jpg");
+        return new File(location, originalName + ".jpg");
     }
 
     public File getStlLocation() {
-        return new File(location, name + ".stl");
+        return new File(location, originalName + ".stl");
     }
 
     public File getG3dbLocation() {
-        return new File(location, name + ".g3db");
+        return new File(location, originalName + ".g3db");
     }
 
     public File getPreviewImage() {

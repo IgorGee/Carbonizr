@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -19,8 +21,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.imagecreatorg3dx.ObjectViewer;
 
+import static xyz.igorgee.utilities.UIUtilities.hideKeyboard;
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
+import static xyz.igorgee.utilities.UIUtilities.showKeyboard;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
@@ -53,7 +57,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.position = position;
-        holder.textView.setText(models.get(position).getName());
+        holder.imageName.setText(models.get(position).getName());
         holder.modelDirectory = models.get(position).getLocation();
         File imageLocation = models.get(position).getImageLocation();
         Picasso.with(context).load(imageLocation).into(holder.imageView);
@@ -71,7 +75,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image_name) TextView textView;
+        @Bind(R.id.image_name) TextView imageName;
+        @Bind(R.id.edit_text_title) EditText imageNameEditText;
         @Bind(R.id.image) ImageView imageView;
         @Bind(R.id.preview_image) ImageView previewImage;
         @Bind(R.id.button_upload_and_buy) ImageView buy;
@@ -108,6 +113,44 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                 context.startActivity(viewModel);
             } else {
                 makeAlertDialog(context, "Error", "File not found.");
+            }
+        }
+
+        @OnClick({R.id.button_edit, R.id.image_name})
+        public void editTitle(View view) {
+            editAndShowKeyboard();
+            imageNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        setTextAndHideKeyboard(v);
+                    }
+                }
+            });
+        }
+
+        private void editAndShowKeyboard() {
+            imageName.setVisibility(View.GONE);
+            imageNameEditText.setText(imageName.getText().toString());
+            imageNameEditText.setSelection(imageNameEditText.length());
+            imageNameEditText.setVisibility(View.VISIBLE);
+            imageNameEditText.requestFocus();
+            showKeyboard(context, imageNameEditText);
+        }
+
+        public void setTextAndHideKeyboard(View v) {
+            hideKeyboard(context, v);
+            String newName = imageNameEditText.getText().toString();
+            imageName.setText(newName);
+            imageNameEditText.clearFocus();
+            imageNameEditText.setVisibility(View.GONE);
+            imageName.setVisibility(View.VISIBLE);
+            try {
+                models.get(position).setName(newName);
+                updateList(models);
+            } catch (IOException e) {
+                e.printStackTrace();
+                makeAlertDialog(context, "Rename Error", "Couldn't rename");
             }
         }
 
