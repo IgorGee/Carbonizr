@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String MY_PREF_NAME = "MyPrefsFile";
     public static final String ACCESS_TOKEN_VALUE = "accessTokenValue";
     public static final String ACCESS_TOKEN_SECRET = "accessTokenSecret";
+    public static final CharSequence[] SOCIAL_MEDIA_PLATFORMS = new CharSequence[]{"Facebook"};
 
     @Bind(R.id.drawerLayout) DrawerLayout drawerLayout;
     @Bind(R.id.rootLayout) CoordinatorLayout rootLayout;

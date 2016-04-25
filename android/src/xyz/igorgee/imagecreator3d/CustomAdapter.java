@@ -1,7 +1,12 @@
 package xyz.igorgee.imagecreator3d;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareMediaContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -161,6 +170,38 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             models.remove(position);
             updateList(models);
             makeSnackbar(view, "Deleted");
+        }
+
+        @OnClick(R.id.button_social)
+        public void share(final View view) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                    .setTitle("Share with:")
+                    .setItems(MainActivity.SOCIAL_MEDIA_PLATFORMS, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    makeSnackbar(view, "Selected " + MainActivity.SOCIAL_MEDIA_PLATFORMS[0]);
+                                    Bitmap crop = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                    Bitmap preview = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
+                                    SharePhoto cropPhoto = new SharePhoto.Builder()
+                                            .setBitmap(crop)
+                                            .build();
+                                    SharePhoto previewPhoto = new SharePhoto.Builder()
+                                            .setBitmap(preview)
+                                            .build();
+                                    ShareContent shareContent = new ShareMediaContent.Builder()
+                                            .addMedium(cropPhoto)
+                                            .addMedium(previewPhoto)
+                                            .build();
+
+                                    ShareDialog shareDialog = new ShareDialog((Activity) context);
+                                    shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                                    break;
+                            }
+                        }
+                    });
+            builder.show();
         }
     }
 }
