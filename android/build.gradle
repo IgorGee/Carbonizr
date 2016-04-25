@@ -48,22 +48,6 @@ dependencies {
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
 
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-
-    compile 'junit:junit:4.12'
-
-    testCompile 'junit:junit:4.12'
-
-    // Espresso
-    androidTestCompile 'com.android.support:support-annotations:23.1.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    androidTestCompile 'com.android.support.test:runner:0.4.1'
-
-    // Hamcrest matching
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-
-    // Mockito
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'junit:junit:4.12'
 }
 
 // called every time gradle gets executed, takes the native dependencies of
