@@ -14,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initializeInstances();
 
         chooseAppropriateFragment(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
     }
 
     private void chooseAppropriateFragment(Bundle savedInstanceState) {

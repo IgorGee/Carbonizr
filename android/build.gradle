@@ -47,6 +47,8 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
 
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+
     compile 'junit:junit:4.12'
 
     testCompile 'junit:junit:4.12'
