@@ -101,14 +101,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         @OnClick(R.id.button_upload_and_buy)
         public void buyModel(View view) {
             Model model = models.get(position);
-
-            if (model.getModelID() == null) {
-                model.setModelID(0);
-                model.uploadModel(buy);
-            } else {
-                model.updateStatus(buy);
-            }
-
+            model.uploadModel(buy);
         }
 
         @OnClick({R.id.button_3d_view, R.id.preview_image})

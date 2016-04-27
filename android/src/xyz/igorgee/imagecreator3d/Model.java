@@ -1,16 +1,21 @@
 package xyz.igorgee.imagecreator3d;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import xyz.igorgee.Api.Model.ModelResponse;
+import xyz.igorgee.utilities.CreateJson;
 import xyz.igorgee.utilities.JavaUtilities;
+import xyz.igorgee.utilities.ModelToUpload;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
@@ -66,85 +71,31 @@ public class Model {
         this.modelID = modelID;
     }
 
-    public void uploadModel(View buyButton) {
-        new UploadModelAsyncTask(buyButton).execute();
-    }
+    public void uploadModel(final View buyButton) {
+        ModelToUpload model = CreateJson.uploadFile(getStlLocation(), getName() + ".stl");
+        Call<ModelResponse> call = HomePageFragment.apiService.uploadToShop(model);
+        call.enqueue(new Callback<ModelResponse>() {
+            @Override
+            public void onResponse(Call<ModelResponse> call, Response<ModelResponse> response) {
+                Log.d("RETROFIT", response.raw().toString());
+                ((ImageView) buyButton).setImageResource(R.drawable.ic_add_shopping_cart_black_24dp);
+                makeSnackbar(buyButton, "Processing started.\nPlease wait 10-20 minutes.",
+                        Snackbar.LENGTH_INDEFINITE);
+                ModelResponse modelResponse = response.body();
+                Log.d("MODELRESPONSE", modelResponse.getUrls().getPublicProductUrl().getAddress());
+            }
 
-    public void updateStatus(View buyButton) {
-        new CheckIfProcessingAsyncTask(buyButton).execute();
+            @Override
+            public void onFailure(Call<ModelResponse> call, Throwable t) {
+                makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
+                        "internet connection. If this problem persists, contact the developer.");
+                Log.d("RETROFIT", "Fail");
+                t.printStackTrace();
+            }
+        });
     }
 
     public void delete() {
         JavaUtilities.deleteDirectory(location);
-    }
-
-    class CheckIfProcessingAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        View buyButton;
-        ProgressDialog progressDialog;
-
-        public CheckIfProcessingAsyncTask(View buyButton) {
-
-            this.buyButton = buyButton;
-            progressDialog = new ProgressDialog(buyButton.getContext());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Checking status...");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            progressDialog.dismiss();
-        }
-    }
-
-    class UploadModelAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        View buyButton;
-        ProgressDialog progressDialog;
-
-        public UploadModelAsyncTask(View buyButton) {
-
-            this.buyButton = buyButton;
-            progressDialog = new ProgressDialog(buyButton.getContext());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Uploading...");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            progressDialog.dismiss();
-            if (true/*response.getCode() != 200*/) {
-                makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
-                        "internet connection. If this problem persists, contact the developer.");
-                setModelID(null);
-            } else {
-                setModelID(modelID);
-                ((ImageView) buyButton).setImageResource(R.drawable.ic_add_shopping_cart_black_24dp);
-                makeSnackbar(buyButton, "Processing started.\nPlease wait 10-20 minutes.",
-                        Snackbar.LENGTH_INDEFINITE);
-            }
-        }
     }
 }
