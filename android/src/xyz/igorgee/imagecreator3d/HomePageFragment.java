@@ -73,11 +73,11 @@ public class HomePageFragment extends Fragment {
     RecyclerView.LayoutManager linearLayoutManager;
 
     public static final String BASE_URL = "http://52.90.86.247/";
-    Retrofit retrofit = new Retrofit.Builder()
+    private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
-    ServerInterface apiService = retrofit.create(ServerInterface.class);
+    public static final ServerInterface apiService = retrofit.create(ServerInterface.class);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_homepage, container, false);
