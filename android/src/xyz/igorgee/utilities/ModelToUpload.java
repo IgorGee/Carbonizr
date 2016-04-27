@@ -1,14 +1,22 @@
 package xyz.igorgee.utilities;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import xyz.igorgee.Api.Model.Material;
+import xyz.igorgee.Api.Materials;
+
 public class ModelToUpload {
     String file;
     String fileName;
-    boolean hasRightsToModel;
-    boolean acceptTermsAndConditions;
+    Boolean hasRightsToModel;
+    Boolean acceptTermsAndConditions;
     String title;
-    boolean isPublic;
-    int isForSale;
-    boolean isDownloadable;
+    Boolean isPublic;
+    Integer isForSale;
+    Boolean isDownloadable;
+    Map<String, Material> materials;
+    Integer defaultMaterialId;
 
     public ModelToUpload(String file, String fileName, boolean hasRightsToModel, boolean acceptTermsAndConditions) {
         this.file = file;
@@ -16,8 +24,15 @@ public class ModelToUpload {
         this.hasRightsToModel = hasRightsToModel;
         this.acceptTermsAndConditions = acceptTermsAndConditions;
         this.isPublic = true;
-        this.isForSale = 0; // Why is this an int and not a boolean lol?
+        this.isForSale = 1; // Why is this an int and not a boolean lol?
         this.isDownloadable = false;
+        this.defaultMaterialId = 6;
+
+        materials = new HashMap<>();
+        for (Materials m : Materials.values()) {
+            materials.put(String.valueOf(m.getMaterialId()),
+                    new Material(m.getMaterialId(), 1.00f, 1));
+        }
     }
 
     public String getFile() {
@@ -82,5 +97,21 @@ public class ModelToUpload {
 
     public void setIsDownloadable(boolean isDownloadable) {
         this.isDownloadable = isDownloadable;
+    }
+
+    public Map<String, Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(Map<String, Material> materials) {
+        this.materials = materials;
+    }
+
+    public Integer getDefaultMaterialId() {
+        return defaultMaterialId;
+    }
+
+    public void setDefaultMaterialId(Integer defaultMaterialId) {
+        this.defaultMaterialId = defaultMaterialId;
     }
 }
