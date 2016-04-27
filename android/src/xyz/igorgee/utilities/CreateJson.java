@@ -11,18 +11,6 @@ import java.net.URLEncoder;
 
 public class CreateJson {
 
-    public static JSONObject addToCart(int modelId) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("modelId", modelId);
-            jsonObject.put("materialId", 6);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return jsonObject;
-    }
-
     public static JSONObject uploadFile(File file, String filename) {
         JSONObject json = new JSONObject();
         try {

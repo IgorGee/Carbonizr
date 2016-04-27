@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.scribejava.core.model.Token;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -42,7 +41,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.igorgee.floatingactionbutton.FloatingActionsMenu;
 import xyz.igorgee.shapejs.ShapeJS;
-import xyz.igorgee.shapwaysapi.Client;
 import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
 
@@ -65,7 +63,6 @@ public class HomePageFragment extends Fragment {
     @Bind(R.id.image_options_fam) FloatingActionsMenu fam;
     @Bind(R.id.list) RecyclerView list;
 
-    public static Client client;
     ArrayList<Model> models;
     CustomAdapter adapter;
     RecyclerView.LayoutManager linearLayoutManager;
@@ -103,24 +100,12 @@ public class HomePageFragment extends Fragment {
 
         sharedPreferences = getActivity().getSharedPreferences
                 (HomePageFragment.MODEL_NAMES, Context.MODE_PRIVATE);
-//        initializeClient();
 
         return view;
     }
 
     public void refresh() {
         adapter.updateList(models);
-    }
-
-    private void initializeClient() {
-        client = new Client();
-        SharedPreferences preferences = getActivity().
-                getSharedPreferences(MainActivity.MY_PREF_NAME, Context.MODE_PRIVATE);
-
-        String accessTokenValue = preferences.getString(MainActivity.ACCESS_TOKEN_VALUE, null);
-        String accessTokenSecret = preferences.getString(MainActivity.ACCESS_TOKEN_SECRET, null);
-
-        client.setAccessToken(new Token(accessTokenValue, accessTokenSecret));
     }
 
     @Override

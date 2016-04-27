@@ -4,20 +4,12 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.github.scribejava.core.model.Response;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import xyz.igorgee.shapwaysapi.Materials;
 import xyz.igorgee.utilities.JavaUtilities;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
@@ -29,14 +21,11 @@ public class Model {
     String originalName;
     File location; // Folder that contains the g3db and stl files.
     Integer modelID;
-    ModelStatus status;
-    ArrayList<Materials> availableMaterials;
 
     public Model(String name, File location) {
         this.name = name;
         this.originalName = name;
         this.location = location;
-        availableMaterials = new ArrayList<>();
     }
 
     public String getName() {
@@ -77,10 +66,6 @@ public class Model {
         this.modelID = modelID;
     }
 
-    public ArrayList<Materials> getAvailableMaterials() {
-        return availableMaterials;
-    }
-
     public void uploadModel(View buyButton) {
         new UploadModelAsyncTask(buyButton).execute();
     }
@@ -95,8 +80,6 @@ public class Model {
 
     class CheckIfProcessingAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        Response response;
-        JSONObject json;
         View buyButton;
         ProgressDialog progressDialog;
 
@@ -115,54 +98,18 @@ public class Model {
 
         @Override
         protected Void doInBackground(Void... params) {
-            response = HomePageFragment.client.checkIfProcessing(modelID);
-            try {
-                json = new JSONObject(response.getBody());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            String result;
-            try {
-                result = json.getString("printable");
-                Log.d("PRINTABILITY", result);
-                status = ModelStatus.getModelStatus(result);
-
-                switch (status) {
-                    case PENDING:
-                        makeSnackbar(buyButton, "Still processing. Try again in a few minutes.",
-                                Snackbar.LENGTH_LONG);
-                        break;
-                    case SUCCESS:
-                        //TODO Actually add it to cart.
-                        makeSnackbar(buyButton, "Added to Cart!", Snackbar.LENGTH_SHORT);
-                        break;
-                    case FAILED:
-                        makeAlertDialog(buyButton.getContext(), "Improper model",
-                                "Your image didn't pass the initial round of processing. " +
-                                        "If this problem persists, contact the developer.");
-                        break;
-                    case UNKNOWN:
-                        makeAlertDialog(buyButton.getContext(), "Spooky Scary Skeletons",
-                                "No idea what's going on. Best bet is to try again or contact the" +
-                                        "developer");
-                        break;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     class UploadModelAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        JSONObject json;
-        Response response;
         View buyButton;
         ProgressDialog progressDialog;
 
@@ -182,24 +129,13 @@ public class Model {
         @Override
         protected Void doInBackground(Void... params) {
 
-            response = HomePageFragment.client.uploadModel(getStlLocation(), getName() + ".stl");
-
-            if (response.getCode() == 200) {
-                try {
-                    json = new JSONObject(response.getBody());
-                    modelID = json.getInt("modelId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            if (response.getCode() != 200) {
+            if (true/*response.getCode() != 200*/) {
                 makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
                         "internet connection. If this problem persists, contact the developer.");
                 setModelID(null);
