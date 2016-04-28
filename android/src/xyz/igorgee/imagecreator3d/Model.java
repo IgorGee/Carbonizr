@@ -27,7 +27,7 @@ public class Model {
     String name;
     String originalName;
     File location; // Folder that contains the g3db and stl files.
-    Integer modelID;
+    ModelResponse modelResponse;
 
     public Model(String name, File location) {
         this.name = name;
@@ -65,58 +65,64 @@ public class Model {
         return new File(location, "preview.jpg");
     }
 
-    public Integer getModelID() {
-        return modelID;
-    }
-
-    public void setModelID(Integer modelID) {
-        this.modelID = modelID;
-    }
-
     public void uploadModel(final View buyButton) {
-        final ProgressDialog progressDialog = new ProgressDialog(buyButton.getContext());
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Carbonizing...");
-        progressDialog.show();
-
-        ModelToUpload model = CreateJson.uploadFile(getStlLocation(), getName() + ".stl");
-        final Call<ModelResponse> call = HomePageFragment.apiService.uploadToShop(model);
-
-        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                call.cancel();
+        if (modelResponse != null) {
+            String urlString = modelResponse.getUrls().getPublicProductUrl().getAddress();
+            Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setPackage("com.android.chrome");
+            try {
+                buyButton.getContext().startActivity(intent);
+            } catch (ActivityNotFoundException ex) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null);
+                buyButton.getContext().startActivity(intent);
             }
-        });
+        } else {
+            final ProgressDialog progressDialog = new ProgressDialog(buyButton.getContext());
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Carbonizing...");
+            progressDialog.show();
 
-        call.enqueue(new Callback<ModelResponse>() {
-            @Override
-            public void onResponse(Call<ModelResponse> call, Response<ModelResponse> response) {
-                progressDialog.dismiss();
-                Log.d("RETROFIT", response.raw().toString());
-                ModelResponse modelResponse = response.body();
-                String urlString = modelResponse.getUrls().getPublicProductUrl().getAddress();
-                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setPackage("com.android.chrome");
-                try {
-                    buyButton.getContext().startActivity(intent);
-                } catch (ActivityNotFoundException ex) {
-                    // Chrome browser presumably not installed so allow user to choose instead
-                    intent.setPackage(null);
-                    buyButton.getContext().startActivity(intent);
+            ModelToUpload model = CreateJson.uploadFile(getStlLocation(), getName() + ".stl");
+            final Call<ModelResponse> call = HomePageFragment.apiService.uploadToShop(model);
+
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    call.cancel();
                 }
-            }
+            });
 
-            @Override
-            public void onFailure(Call<ModelResponse> call, Throwable t) {
-                if (!call.isCanceled())
-                    makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
-                            "internet connection. If this problem persists, contact the developer.");
-                Log.d("RETROFIT", "Fail");
-                t.printStackTrace();
-            }
-        });
+            call.enqueue(new Callback<ModelResponse>() {
+                @Override
+                public void onResponse(Call<ModelResponse> call, Response<ModelResponse> response) {
+                    progressDialog.dismiss();
+                    Log.d("RETROFIT", response.raw().toString());
+                    modelResponse = response.body();
+                    String urlString = modelResponse.getUrls().getPublicProductUrl().getAddress();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setPackage("com.android.chrome");
+                    try {
+                        buyButton.getContext().startActivity(intent);
+                    } catch (ActivityNotFoundException ex) {
+                        // Chrome browser presumably not installed so allow user to choose instead
+                        intent.setPackage(null);
+                        buyButton.getContext().startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ModelResponse> call, Throwable t) {
+                    if (!call.isCanceled())
+                        makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
+                                "internet connection. If this problem persists, contact the developer.");
+                    Log.d("RETROFIT", "Fail");
+                    t.printStackTrace();
+                }
+            });
+        }
     }
 
     public void delete() {
