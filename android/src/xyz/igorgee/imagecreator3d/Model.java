@@ -1,10 +1,11 @@
 package xyz.igorgee.imagecreator3d;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,6 @@ import xyz.igorgee.utilities.JavaUtilities;
 import xyz.igorgee.utilities.ModelToUpload;
 
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
-import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 
 public class Model {
@@ -78,11 +78,18 @@ public class Model {
             @Override
             public void onResponse(Call<ModelResponse> call, Response<ModelResponse> response) {
                 Log.d("RETROFIT", response.raw().toString());
-                ((ImageView) buyButton).setImageResource(R.drawable.ic_add_shopping_cart_black_24dp);
-                makeSnackbar(buyButton, "Processing started.\nPlease wait 10-20 minutes.",
-                        Snackbar.LENGTH_INDEFINITE);
                 ModelResponse modelResponse = response.body();
-                Log.d("MODELRESPONSE", modelResponse.getUrls().getPublicProductUrl().getAddress());
+                String urlString = modelResponse.getUrls().getPublicProductUrl().getAddress();
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    buyButton.getContext().startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    buyButton.getContext().startActivity(intent);
+                }
             }
 
             @Override
