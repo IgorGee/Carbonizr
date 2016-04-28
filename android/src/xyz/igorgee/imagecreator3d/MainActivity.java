@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.rootLayout) CoordinatorLayout rootLayout;
     @Bind(R.id.toolBar) Toolbar toolbar;
     @Bind(R.id.navigation) NavigationView navigation;
-    ActionBarDrawerToggle drawerToggle;
+    public static ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                if (drawerToggle.isDrawerIndicatorEnabled()) {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                } else {
+                    onBackPressed();
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -100,6 +104,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     intent.setPackage(null);
                     this.startActivity(intent);
                 }
+                break;
+            case R.id.faq:
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentPlaceholder, new FAQFragment(), "FAQ")
+                        .addToBackStack(null)
+                        .commit();
+                drawerLayout.closeDrawers();
+                drawerToggle.setDrawerIndicatorEnabled(false);
         }
 
         return false;
@@ -110,5 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPostCreate(savedInstanceState);
         // Changes home icon from "back" to "hamburger"
         drawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

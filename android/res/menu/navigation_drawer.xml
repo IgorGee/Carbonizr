@@ -6,6 +6,10 @@
             android:id="@+id/cart_browser"
             android:title="@string/cart_browser_string"/>
 
+        <item
+            android:id="@+id/faq"
+            android:title="@string/faq"/>
+
     </group>
 
 </menu>
