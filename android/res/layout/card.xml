@@ -52,7 +52,7 @@
                         app:layout_aspectRatio="100%"
                         android:scaleType="centerCrop"
                         android:contentDescription="@string/image_content_description"
-                        android:src="@drawable/ic_launcher"/>
+                        android:src="@mipmap/ic_launcher"/>
                 </android.support.percent.PercentRelativeLayout>
 
                 <android.support.percent.PercentRelativeLayout
@@ -64,7 +64,7 @@
                         app:layout_aspectRatio="100%"
                         android:scaleType="centerCrop"
                         android:contentDescription="@string/image_content_description"
-                        android:src="@drawable/ic_launcher"/>
+                        android:src="@mipmap/ic_launcher"/>
                 </android.support.percent.PercentRelativeLayout>
 
             </LinearLayout>
