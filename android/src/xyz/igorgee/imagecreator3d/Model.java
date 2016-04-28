@@ -1,6 +1,8 @@
 package xyz.igorgee.imagecreator3d;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -72,11 +74,25 @@ public class Model {
     }
 
     public void uploadModel(final View buyButton) {
+        final ProgressDialog progressDialog = new ProgressDialog(buyButton.getContext());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Carbonizing...");
+        progressDialog.show();
+
         ModelToUpload model = CreateJson.uploadFile(getStlLocation(), getName() + ".stl");
-        Call<ModelResponse> call = HomePageFragment.apiService.uploadToShop(model);
+        final Call<ModelResponse> call = HomePageFragment.apiService.uploadToShop(model);
+
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                call.cancel();
+            }
+        });
+
         call.enqueue(new Callback<ModelResponse>() {
             @Override
             public void onResponse(Call<ModelResponse> call, Response<ModelResponse> response) {
+                progressDialog.dismiss();
                 Log.d("RETROFIT", response.raw().toString());
                 ModelResponse modelResponse = response.body();
                 String urlString = modelResponse.getUrls().getPublicProductUrl().getAddress();
@@ -94,8 +110,9 @@ public class Model {
 
             @Override
             public void onFailure(Call<ModelResponse> call, Throwable t) {
-                makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
-                        "internet connection. If this problem persists, contact the developer.");
+                if (!call.isCanceled())
+                    makeAlertDialog(buyButton.getContext(), "Error", "Please make sure you have a stable" +
+                            "internet connection. If this problem persists, contact the developer.");
                 Log.d("RETROFIT", "Fail");
                 t.printStackTrace();
             }
