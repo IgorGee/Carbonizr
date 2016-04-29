@@ -91,9 +91,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (id) {
-            // TODO: Create your own checkout page.
             case R.id.cart_browser:
-                String urlString="https://shapeways.com/cart";
+                String urlString="https://shapeways.com/shops/carbonizr";
                 Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setPackage("com.android.chrome");

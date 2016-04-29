@@ -1,11 +1,9 @@
 package xyz.igorgee.imagecreator3d;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -42,9 +40,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import xyz.igorgee.floatingactionbutton.FloatingActionsMenu;
 import xyz.igorgee.Api.Cart.Cart;
 import xyz.igorgee.Api.ServerInterface;
+import xyz.igorgee.floatingactionbutton.FloatingActionsMenu;
 import xyz.igorgee.shapejs.ShapeJS;
 import xyz.igorgee.utilities.ImageHelper;
 import xyz.igorgee.utilities.JavaUtilities;
@@ -313,13 +311,6 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    private void deleteAllModels() {
-        JavaUtilities.deleteDirectory(modelsDirectory);
-        models.clear();
-        refresh();
-        textView.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.homepage_toolbar, menu);
@@ -332,7 +323,7 @@ public class HomePageFragment extends Fragment {
 
         switch (id) {
             case R.id.cart:
-                String urlString="https://shapeways.com/cart";
+                String urlString="https://shapeways.com/shops/carbonizr";
                 Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setPackage("com.android.chrome");
@@ -343,24 +334,6 @@ public class HomePageFragment extends Fragment {
                     intent.setPackage(null);
                     this.startActivity(intent);
                 }
-                break;
-            case R.id.clear_list:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Clear List")
-                        .setMessage("Are you sure you want to delete all these images?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                deleteAllModels();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .show();
                 break;
         }
 

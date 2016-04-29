@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="@dimen/nav_header_text_margin_left"
-        android:text="@string/username_placeholder"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
 </FrameLayout>

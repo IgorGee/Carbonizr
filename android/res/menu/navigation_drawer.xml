@@ -4,7 +4,7 @@
 
         <item
             android:id="@+id/cart_browser"
-            android:title="@string/cart_browser_string"/>
+            android:title="@string/carbonizr_shop_browser"/>
 
         <item
             android:id="@+id/faq"

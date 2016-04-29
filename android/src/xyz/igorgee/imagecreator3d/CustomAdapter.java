@@ -158,11 +158,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         @OnClick (R.id.button_delete)
         public void deleteModel(View view) {
-            //TODO Remove this from the cart as well
             models.get(position).delete();
             models.remove(position);
             updateList(models);
-            makeSnackbar(view, "Deleted");
         }
 
         @OnClick(R.id.button_social)
