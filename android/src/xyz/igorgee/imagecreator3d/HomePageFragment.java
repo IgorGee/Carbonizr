@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -149,14 +150,15 @@ public class HomePageFragment extends Fragment {
     private void checkExistingFiles() {
         if (modelsDirectory.listFiles() != null) {
             for (final File directory : modelsDirectory.listFiles()) {
-                for (final File file : directory.listFiles())
+                for (final File file : directory.listFiles()) {
                     if (file.getName().endsWith(".stl")) {
                         String fileName = file.getName().substring(0, file.getName().length() - 4);
                         models.add(new Model(fileName, directory));
                         textView.setVisibility(View.GONE);
-                        refresh();
                     }
-
+                }
+                Collections.reverse(models);
+                refresh();
             }
         }
     }
