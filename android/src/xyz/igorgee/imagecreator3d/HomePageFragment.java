@@ -37,11 +37,8 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import xyz.igorgee.Api.Cart.Cart;
 import xyz.igorgee.Api.ServerInterface;
 import xyz.igorgee.floatingactionbutton.FloatingActionsMenu;
 import xyz.igorgee.shapejs.ShapeJS;
@@ -53,7 +50,6 @@ import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
 public class HomePageFragment extends Fragment {
 
-    private final static int SELECT_PHOTO = 46243;
     private final static int TAKE_PICTURE = 7428873;
     private final static String MODELS_DIRECTORY_NAME = "models";
     public static final String MODEL_NAMES = "ModelNames";
@@ -122,29 +118,6 @@ public class HomePageFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         checkExistingFiles();
-        testRetrofit();
-    }
-
-    private void testRetrofit() {
-        Call<Cart> call = apiService.getCart();
-        call.enqueue(new retrofit2.Callback<Cart>() {
-            @Override
-            public void onResponse(Call<Cart> call, Response<Cart> response) {
-                Log.d("RETROFIT", response.raw().toString());
-                Cart c = response.body();
-                Log.d("CART", "cartKey: " + c.getItems().get(0).getCartKey());
-                Log.d("CART", "modelId: " + c.getItems().get(0).getModelId());
-                Log.d("CART", "spin: " + c.getItems().get(0).getSpin());
-                Log.d("CART", "materialId: " + c.getItems().get(0).getMaterialId());
-                Log.d("CART", "quantity: " + c.getItems().get(0).getQuantity());
-            }
-
-            @Override
-            public void onFailure(Call<Cart> call, Throwable t) {
-                Log.d("RETROFIT", "Fail");
-                t.printStackTrace();
-            }
-        });
     }
 
     private void checkExistingFiles() {

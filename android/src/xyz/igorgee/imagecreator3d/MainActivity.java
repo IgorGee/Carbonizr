@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,13 +21,9 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String MY_PREF_NAME = "MyPrefsFile";
-    public static final String ACCESS_TOKEN_VALUE = "accessTokenValue";
-    public static final String ACCESS_TOKEN_SECRET = "accessTokenSecret";
     public static final CharSequence[] SOCIAL_MEDIA_PLATFORMS = new CharSequence[]{"Facebook"};
 
     @Bind(R.id.drawerLayout) DrawerLayout drawerLayout;
-    @Bind(R.id.rootLayout) CoordinatorLayout rootLayout;
     @Bind(R.id.toolBar) Toolbar toolbar;
     @Bind(R.id.navigation) NavigationView navigation;
     public static ActionBarDrawerToggle drawerToggle;

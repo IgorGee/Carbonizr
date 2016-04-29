@@ -3,17 +3,12 @@
 
     <string name="app_name">Carbonizr</string>
     <string name="title">Carbonizr</string>
-    <string name="google_sign_in">Sign In With Google</string>
-    <string name="facebook_sign_in">Sign In With Facebook</string>
     <string name="carbonizr_shop_browser">Carbonizr Shop</string>
-    <string name="authenticate_button_text">Authorize</string>
 
     <string name="navbar_image_content_description">Navigation Bar background image</string>
     <string name="drawer_open_desc">open</string>
     <string name="drawer_close_desc">close</string>
-    <string name="pin_code_hint">Pin Code</string>
     <string name="empty_home_page">Please select an image.</string>
-    <string name="get_pin_text">Get Pin</string>
     <string name="image_content_description">Cropped Image</string>
     <string name="button_3d_view">3D</string>
     <string name="button_purchase">Buy</string>
