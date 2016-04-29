@@ -233,7 +233,9 @@ public class HomePageFragment extends Fragment {
             File zipFile = new File(modelDirectory, filename + ".zip");
 
             try {
-                makeSnackbar(textView, "Uploaded!\nGenerating model. Please wait.", Snackbar.LENGTH_LONG);
+                makeSnackbar(textView,
+                        "Uploaded!\nGenerating model. Please wait.",
+                        Snackbar.LENGTH_LONG);
                 inputStream = shapeJS.uploadImage(file);
                 outputStream = new FileOutputStream(zipFile);
 
