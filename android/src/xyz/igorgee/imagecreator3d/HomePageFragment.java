@@ -308,6 +308,7 @@ public class HomePageFragment extends Fragment {
             } else {
                 final Model model = new Model(filename, modelDirectory);
                 models.add(0, model);
+                list.smoothScrollToPosition(0);
                 refresh();
             }
         }
