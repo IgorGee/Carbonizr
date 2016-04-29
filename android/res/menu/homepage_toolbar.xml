@@ -12,9 +12,9 @@
         android:icon="@drawable/ic_cart"/>
 
     <item
-        android:id="@+id/clear_list"
+        android:id="@+id/faq"
         android:orderInCategory="100"
-        android:title="@string/clear_string"
-        app:showAsAction="always"/>
+        android:title="@string/faq_string"
+        app:showAsAction="never"/>
 
 </menu>

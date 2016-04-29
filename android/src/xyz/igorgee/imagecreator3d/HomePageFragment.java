@@ -311,6 +311,13 @@ public class HomePageFragment extends Fragment {
                     this.startActivity(intent);
                 }
                 break;
+            case R.id.faq:
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentPlaceholder, new FAQFragment(), "FAQ")
+                        .addToBackStack(null)
+                        .commit();
+                MainActivity.drawerToggle.setDrawerIndicatorEnabled(false);
         }
 
         return super.onOptionsItemSelected(item);
