@@ -161,10 +161,19 @@ public class HomePageFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == Crop.REQUEST_PICK || requestCode == TAKE_PICTURE) {
                 Uri pickedImage = data.getData();
-                String filename = getNameFromUri(getActivity(), pickedImage);
+                File source = new File(getRealPathFromURI(pickedImage));
 
-                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), filename));
-                Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
+
+                Log.d("FILEPATHS", source.exists() + " " + source.getAbsolutePath());
+                Log.d("FILEPATHS", pickedImage.getPath());
+                Log.d("FILEPATHS", String.valueOf(pickedImage));
+
+                if (source.exists()) {
+                    Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), source.getName()));
+                    Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
+                } else {
+                    makeAlertDialog(getActivity(), "File doesn't exist", "Your gallery application may have a saved file of an image that doesn't exist on your local storage.");
+                }
             } else if (requestCode == Crop.REQUEST_CROP) {
                 Uri croppedImage = Crop.getOutput(data);
                 File imagePath = new File(croppedImage.getPath());
@@ -174,23 +183,18 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    public String getNameFromUri(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        String name;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
             cursor.moveToFirst();
-            File file = new File(cursor.getString(column_index));
-            name = file.getName();
-            file.delete();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
         }
-        return name;
+        return result;
     }
 
     private class GenerateObject extends AsyncTask<Void, Void, Void> {
