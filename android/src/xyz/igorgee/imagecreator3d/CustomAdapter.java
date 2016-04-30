@@ -92,6 +92,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         int position;
         File modelDirectory;
+        boolean editing = false;
 
         public ViewHolder(View view) {
             super(view);
@@ -100,35 +101,48 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         @OnClick(R.id.button_upload_and_buy)
         public void buyModel(View view) {
-            Model model = models.get(position);
-            model.uploadModel(buy);
+            if (editing) {
+                setTextAndHideKeyboard(view);
+            } else {
+                Model model = models.get(position);
+                model.uploadModel(buy);
+            }
         }
 
         @OnClick({R.id.button_3d_view, R.id.preview_image})
         public void viewIn3D(View view) {
-            Model model = models.get(position);
-            File previewModel = model.getG3dbLocation();
+            if (editing) {
+                setTextAndHideKeyboard(view);
+            }else {
+                Model model = models.get(position);
+                File previewModel = model.getG3dbLocation();
 
-            if (previewModel.exists()) {
-                Intent viewModel = new Intent(context, ObjectViewer.class);
-                viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
-                context.startActivity(viewModel);
-            } else {
-                makeAlertDialog(context, "Error", "File not found.");
+                if (previewModel.exists()) {
+                    Intent viewModel = new Intent(context, ObjectViewer.class);
+                    viewModel.putExtra(ObjectViewer.EXTRA_MODEL_FILE, previewModel);
+                    context.startActivity(viewModel);
+                } else {
+                    makeAlertDialog(context, "Error", "File not found.");
+                }
             }
         }
 
         @OnClick({R.id.button_edit, R.id.image_name})
         public void editTitle(View view) {
-            editAndShowKeyboard();
-            imageNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        setTextAndHideKeyboard(v);
+            if (editing) {
+                setTextAndHideKeyboard(view);
+            } else {
+                editing = true;
+                editAndShowKeyboard();
+                imageNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (!hasFocus) {
+                            setTextAndHideKeyboard(v);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         private void editAndShowKeyboard() {
@@ -149,50 +163,58 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             imageName.setVisibility(View.VISIBLE);
             try {
                 models.get(position).setName(newName);
-                updateList(models);
             } catch (IOException e) {
                 e.printStackTrace();
                 makeAlertDialog(context, "Rename Error", "Couldn't rename");
             }
+            editing = false;
         }
 
         @OnClick (R.id.button_delete)
         public void deleteModel(View view) {
-            models.get(position).delete();
-            models.remove(position);
-            updateList(models);
+            if (editing) {
+                setTextAndHideKeyboard(view);
+            } else {
+                models.get(position).delete();
+                models.remove(position);
+                updateList(models);
+            }
         }
 
         @OnClick(R.id.button_social)
         public void share(final View view) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                    .setTitle("Share with:")
-                    .setItems(MainActivity.SOCIAL_MEDIA_PLATFORMS, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    makeSnackbar(view, "Selected " + MainActivity.SOCIAL_MEDIA_PLATFORMS[0]);
-                                    Bitmap crop = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                                    Bitmap preview = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
-                                    SharePhoto cropPhoto = new SharePhoto.Builder()
-                                            .setBitmap(crop)
-                                            .build();
-                                    SharePhoto previewPhoto = new SharePhoto.Builder()
-                                            .setBitmap(preview)
-                                            .build();
-                                    ShareContent shareContent = new ShareMediaContent.Builder()
-                                            .addMedium(cropPhoto)
-                                            .addMedium(previewPhoto)
-                                            .build();
+            if (editing) {
+                setTextAndHideKeyboard(view);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                        .setTitle("Share with:")
+                        .setItems(MainActivity.SOCIAL_MEDIA_PLATFORMS, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        makeSnackbar(view, "Selected " + MainActivity.SOCIAL_MEDIA_PLATFORMS[0]);
+                                        Bitmap crop = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                        Bitmap preview = ((BitmapDrawable) previewImage.getDrawable()).getBitmap();
+                                        SharePhoto cropPhoto = new SharePhoto.Builder()
+                                                .setBitmap(crop)
+                                                .build();
+                                        SharePhoto previewPhoto = new SharePhoto.Builder()
+                                                .setBitmap(preview)
+                                                .build();
+                                        ShareContent shareContent = new ShareMediaContent.Builder()
+                                                .addMedium(cropPhoto)
+                                                .addMedium(previewPhoto)
+                                                .build();
 
-                                    ShareDialog shareDialog = new ShareDialog((Activity) context);
-                                    shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
-                                    break;
+                                        ShareDialog shareDialog = new ShareDialog((Activity) context);
+                                        shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                                        break;
+                                }
                             }
-                        }
-                    });
-            builder.show();
+                        });
+                builder.show();
+            }
         }
     }
 }
