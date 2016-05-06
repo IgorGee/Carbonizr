@@ -1,4 +1,4 @@
-[logo]: http://imgur.com/uAog0nK.jpg "Logo"
+[logo]: http://imgur.com/H0zXpAa.jpg "Logo"
 [brain]: http://imgur.com/gjB3z0n.jpg "Brain"
 [doge with it]: http://imgur.com/b4hoaDi.jpg "Doge With It"
 [statue of liberty]: http://imgur.com/7sHz9Y7.jpg "Statue of Liberty"
@@ -9,9 +9,6 @@
 [many doge]: http://imgur.com/xu9IuLN.jpg "Many Doge"
 [samples]: http://imgur.com/cKBGzUo.jpg "Samples"
 [size reference]: http://imgur.com/WiZprvx.jpg "Size Reference"
-
-Carbonizr
-===
 
 ![logo][logo]
 
