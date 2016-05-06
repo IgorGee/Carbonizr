@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -106,6 +107,8 @@ public class HomePageFragment extends Fragment {
 
         sharedPreferences = getActivity().getSharedPreferences
                 (HomePageFragment.MODEL_NAMES, Context.MODE_PRIVATE);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Powered by Shapeways");
 
         return view;
     }
