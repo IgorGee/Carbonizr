@@ -1,5 +1,7 @@
 package xyz.igorgee.shapejs;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +38,11 @@ public class ShapeJS {
 
         Response response = client.newCall(request).execute();
 
-        if (!response.isSuccessful()) throw new IOException("Unsuccessful response");
 
+        Log.d("RESPONSE HEAD", String.valueOf(response.code()));
+        Log.d("RESPONSE MESSAGE", response.message());
+
+        if (!response.isSuccessful()) throw new IOException("Unsuccessful response");
         return response.body().byteStream();
     }
 }
