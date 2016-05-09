@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,6 +56,9 @@ public class HomePageFragment extends Fragment {
     private final static int TAKE_PICTURE = 7428873;
     private final static String MODELS_DIRECTORY_NAME = "models";
     public static final String MODEL_NAMES = "ModelNames";
+    private static final String CAPTURE_IMAGE_FILE_PROVIDER = "xyz.igorgee.carbonizr.fileprovider";
+    public static final String TEMPORARY_IMAGE_FOLDER = "temp";
+    public static final String TEMPORARY_IMAGE_NAME = "image.jpg";
 
     public static SharedPreferences sharedPreferences;
 
@@ -148,12 +152,16 @@ public class HomePageFragment extends Fragment {
 
     @OnClick(R.id.camera_fab)
     public void takePicture(View view) {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, TAKE_PICTURE);
-        } else {
-            makeSnackbar(view, "Sorry you need to have a camera app.");
-        }
+        File path = new File(getActivity().getFilesDir(), TEMPORARY_IMAGE_FOLDER);
+        if (!path.exists())
+            path.mkdirs();
+        File image = new File(path, TEMPORARY_IMAGE_NAME);
+        Uri imageUri = FileProvider.getUriForFile(getActivity(), CAPTURE_IMAGE_FILE_PROVIDER, image);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+        startActivityForResult(intent, TAKE_PICTURE);
         fam.collapse();
     }
 
@@ -161,22 +169,23 @@ public class HomePageFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == Crop.REQUEST_PICK || requestCode == TAKE_PICTURE) {
+        if (resultCode == Activity.RESULT_OK) {
+
+            if (requestCode == TAKE_PICTURE) {
+                File path = new File(getActivity().getFilesDir(), TEMPORARY_IMAGE_FOLDER);
+                if (!path.exists())
+                    path.mkdirs();
+                File imageFile = new File(path, TEMPORARY_IMAGE_NAME);
+                Uri tempUri = Uri.fromFile(imageFile);
+                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), imageFile.getName()));
+                Crop.of(tempUri, destination).asSquare().start(getActivity(), this);
+
+            } else if (requestCode == Crop.REQUEST_PICK) {
                 Uri pickedImage = data.getData();
-                File source = new File(getRealPathFromURI(pickedImage));
+                File imageFile = new File(getPath(pickedImage));
+                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), imageFile.getName()));
+                Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
 
-
-                Log.d("FILEPATHS", source.exists() + " " + source.getAbsolutePath());
-                Log.d("FILEPATHS", pickedImage.getPath());
-                Log.d("FILEPATHS", String.valueOf(pickedImage));
-
-                if (source.exists()) {
-                    Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), source.getName()));
-                    Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
-                } else {
-                    makeAlertDialog(getActivity(), "File doesn't exist", "Your gallery application may have a saved file of an image that doesn't exist on your local storage.");
-                }
             } else if (requestCode == Crop.REQUEST_CROP) {
                 Uri croppedImage = Crop.getOutput(data);
                 File imagePath = new File(croppedImage.getPath());
@@ -186,18 +195,16 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
+            return cursor.getString(column_index);
+        } else {
+            return null;
         }
-        return result;
     }
 
     private class GenerateObject extends AsyncTask<Void, Void, Void> {
