@@ -289,9 +289,17 @@ public class HomePageFragment extends Fragment {
                 inputStream = shapeJS.uploadImage(file);
                 outputStream = new FileOutputStream(zipFile);
 
-                int b;
-                while ((b = inputStream.read()) != -1) {
-                    outputStream.write(b);
+                int numRead;
+                int total = 0;
+                byte[] buffer = new byte[102400];
+                while ((numRead = inputStream.read(buffer)) >= 0) {
+                    total += numRead;
+                    outputStream.write(buffer, 0, numRead);
+
+                    if (total > 1024 * 1024) {
+                        total = 0;
+                        outputStream.flush();
+                    }
                 }
 
                 JavaUtilities.unzip(zipFile, modelDirectory);
