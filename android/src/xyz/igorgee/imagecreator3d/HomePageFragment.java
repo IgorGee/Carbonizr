@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -29,7 +31,9 @@ import android.widget.TextView;
 
 import com.soundcloud.android.crop.Crop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -182,9 +186,14 @@ public class HomePageFragment extends Fragment {
 
             } else if (requestCode == Crop.REQUEST_PICK) {
                 Uri pickedImage = data.getData();
-                File imageFile = new File(getPath(pickedImage));
-                Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), imageFile.getName()));
-                Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
+                File imageFile;
+                try {
+                    imageFile = getImageFileFromUri(pickedImage);
+                    Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), imageFile.getName()));
+                    Crop.of(pickedImage, destination).asSquare().start(getActivity(), this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } else if (requestCode == Crop.REQUEST_CROP) {
                 Uri croppedImage = Crop.getOutput(data);
@@ -195,16 +204,46 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else {
-            return null;
+    private File getImageFileFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getActivity().getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor;
+        Bitmap image = null;
+        if (parcelFileDescriptor != null) {
+            fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
         }
+
+        String fileName = null;
+
+        String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
+        Cursor metaCursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        if (metaCursor != null) {
+            try {
+                if (metaCursor.moveToFirst()) {
+                    fileName = metaCursor.getString(0);
+                }
+            } finally {
+                metaCursor.close();
+            }
+        }
+
+        File imageFile = new File(getActivity().getCacheDir(), fileName);
+        imageFile.createNewFile();
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        if (image != null) {
+            image.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        }
+        byte[] bitmapdata = bos.toByteArray();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+        fileOutputStream.write(bitmapdata);
+        fileOutputStream.flush();
+        fileOutputStream.close();
+
+        return imageFile;
     }
 
     private class GenerateObject extends AsyncTask<Void, Void, Void> {
@@ -232,6 +271,7 @@ public class HomePageFragment extends Fragment {
             modelDirectory.mkdirs();
             Log.d("FILELOCATION", modelDirectory.getAbsolutePath());
             Log.d("FILENAMEDATE", modelDirectory.getName());
+
             bitmap = ImageHelper.decodeSampledBitmapFromResource(file.getAbsoluteFile());
         }
 
