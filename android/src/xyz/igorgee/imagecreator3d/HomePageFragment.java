@@ -1,5 +1,6 @@
 package xyz.igorgee.imagecreator3d;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
@@ -44,6 +45,8 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.igorgee.Api.ServerInterface;
@@ -55,6 +58,7 @@ import xyz.igorgee.utilities.JavaUtilities;
 import static xyz.igorgee.utilities.UIUtilities.makeAlertDialog;
 import static xyz.igorgee.utilities.UIUtilities.makeSnackbar;
 
+@RuntimePermissions
 public class HomePageFragment extends Fragment {
 
     private final static int TAKE_PICTURE = 7428873;
@@ -149,13 +153,23 @@ public class HomePageFragment extends Fragment {
     }
 
     @OnClick(R.id.gallery_fab)
-    public void selectImage(View view) {
+    public void gallery(View view) {
+        HomePageFragmentPermissionsDispatcher.selectImageWithCheck(this);
+    }
+
+    @OnClick(R.id.camera_fab)
+    public void camera(View view) {
+        HomePageFragmentPermissionsDispatcher.takePictureWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void selectImage() {
         Crop.pickImage(getActivity(), this);
         fam.collapse();
     }
 
-    @OnClick(R.id.camera_fab)
-    public void takePicture(View view) {
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void takePicture() {
         File path = new File(getActivity().getFilesDir(), TEMPORARY_IMAGE_FOLDER);
         if (!path.exists())
             path.mkdirs();
@@ -167,6 +181,12 @@ public class HomePageFragment extends Fragment {
 
         startActivityForResult(intent, TAKE_PICTURE);
         fam.collapse();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        HomePageFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

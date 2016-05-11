@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "xyz.igorgee.imagecreator3d"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -31,6 +31,8 @@ android {
         }
     }
 }
+
+apply plugin: 'android-apt'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -53,6 +55,10 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    compile 'com.android.support:support-v13:23.0.+'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.1.2'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.1.2'
 }
 
 // called every time gradle gets executed, takes the native dependencies of
