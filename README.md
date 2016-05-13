@@ -19,6 +19,8 @@
 
 ![logo][logo]
 
+<a href='https://play.google.com/store/apps/details?id=xyz.igorgee.imagecreator3d&hl=en&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='25%' width='25%'/></a>
+
 An Android application where you can create 3D models of a picture and even 3D print it!
 
 Available printing materials range from colored plastics, wax, stainless steel, gold, silver, brass,
